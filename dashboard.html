@@ -13,50 +13,40 @@
 
         body {
             margin: 0;
-            padding: 30px;
+            padding: 25px;
             height: 100vh;
             box-sizing: border-box;
-            /* Hintergrund-Verlauf basierend auf deinem Foto */
             background: linear-gradient(145deg, #1e3a8a 0%, #7e22ce 50%, #be185d 100%);
             background-attachment: fixed;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             color: white;
             display: grid;
-            grid-template-columns: 420px 1fr;
+            grid-template-columns: 500px 1fr; 
             grid-template-rows: 1fr auto;
-            gap: 25px;
+            gap: 20px;
             overflow: hidden;
         }
 
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 30px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-
-        /* Linke Seite: Uhr & Ventusky */
-        .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 25px;
         }
 
-        .clock {
-            font-size: 5.5rem;
-            font-weight: bold;
-            margin: 10px 0;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .time-container { margin-bottom: 10px; }
+        .clock { font-size: 5rem; font-weight: bold; line-height: 1; }
+        .date { font-size: 1.5rem; opacity: 0.9; margin-top: 5px; color: #e0e0e0; }
 
         .weather-widget {
-            height: 350px;
+            flex-grow: 1;
+            min-height: 450px; 
+            padding: 0;
             overflow: hidden;
-            position: relative;
-            padding: 0; /* Ventusky soll die Kachel ausfüllen */
         }
 
         .weather-widget iframe {
@@ -66,34 +56,24 @@
             border-radius: 30px;
         }
 
-        /* Rechte Seite: Kalender */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-        }
-
         .calendar-container {
-            flex-grow: 1;
-            width: 100%;
-            border-radius: 10px;
-            overflow: hidden;
+            height: 75%; /* Kalender etwas kompakter */
+            align-self: flex-start;
         }
 
-        /* Kalender auf Dark Mode trimmen */
         .calendar-container iframe {
-            width: 90%;
-            height: 90%;
+            width: 100%;
+            height: 100%;
             border: none;
+            border-radius: 20px;
+            /* Dark Mode Filter für den Kalender */
             filter: invert(0.9) hue-rotate(180deg) opacity(0.8);
         }
 
-        /* Untere Leiste: Buttons */
         .bottom-bar {
             grid-column: 1 / 3;
             display: flex;
-            gap: 20px;
-            justify-content: flex-start;
-            padding-top: 10px;
+            gap: 15px;
         }
 
         .action-btn {
@@ -101,110 +81,92 @@
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 20px 40px;
-            border-radius: 22px;
+            padding: 18px 30px;
+            border-radius: 20px;
             font-weight: bold;
-            font-size: 1.1rem;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
-        .btn-plan {
-            background: var(--accent);
-            border: none;
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
-        }
-
+        .btn-plan { background: var(--accent); border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .action-btn:active { transform: scale(0.95); }
 
-        /* Overlay für Wochenplan */
         #plan-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center;
         }
 
-        .overlay-content {
-            width: 92%;
-            height: 92%;
-            background: white;
-            border-radius: 35px;
-            overflow: hidden;
-            position: relative;
-        }
-
+        .overlay-content { width: 92%; height: 92%; background: white; border-radius: 35px; overflow: hidden; position: relative; }
+        
         .close-btn {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: #ff7675;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 1010;
+            position: absolute; top: 20px; right: 20px; background: #ff7675; color: white;
+            border: none; padding: 15px 25px; border-radius: 15px; font-weight: bold; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="clock" id="clock">10:33</div>
+        <div class="time-container">
+            <div id="clock" class="clock">00:00</div>
+            <div id="date" class="date">Wochentag, 01. Januar</div>
+        </div>
         
-        <!-- Ventusky klein als Kachel -->
         <div class="glass-card weather-widget">
+            <!-- Ventusky Widget -->
             <iframe src="https://www.ventusky.com/?p=48.21;16.37;5&l=temperature-2m"></iframe>
         </div>
     </div>
 
     <div class="main-content">
         <div class="glass-card calendar-container">
-            <h2 style="margin-top: 0; font-size: 1.4rem;">📅 Kalender</h2>
-            <!-- Ersetze DEINE_ID durch deine Google Mail -->
-            <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+            <h3 style="margin-top: 0;">📅 Termine</h3>
+            <!-- Dein Google Kalender Link (öffentlich geschaltet) -->
+            <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
         </div>
     </div>
 
     <div class="bottom-bar">
-        <!-- Der Button öffnet deinen Wochenplan -->
-        <button class="action-btn btn-plan" onclick="togglePlan(true)">🍴 Wochenplan öffnen</button>
-        <button class="action-btn">💡 Licht</button>
-        <button class="action-btn">🤖 Roborock</button>
-        <button class="action-btn">📺 TV</button>
+        <button class="action-btn btn-plan" onclick="togglePlan(true)">🍴 Wochenplan & Einkauf</button>
+        <button class="action-btn" onclick="control('licht')">💡 Licht</button>
+        <button class="action-btn" onclick="control('tuer')">🔓 SwitchBot Schloss</button>
+        <button class="action-btn" onclick="control('heizung')">🌡️ Heizung</button>
     </div>
 
-    <!-- Wochenplan Pop-up -->
     <div id="plan-overlay">
         <button class="close-btn" onclick="togglePlan(false)">Schließen</button>
         <div class="overlay-content">
-            <iframe id="plan-iframe" style="width:100%; height:100%; border:none;"></iframe>
+            <!-- Dein Wochenplan Link -->
+            <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
 
     <script>
-        function updateTime() {
+        function updateDateTime() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            const options = { weekday: 'long', day: '2-digit', month: 'long' };
+            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', options);
         }
-        setInterval(updateTime, 1000);
-        updateTime();
+        
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
 
         function togglePlan(show) {
             const overlay = document.getElementById('plan-overlay');
             const iframe = document.getElementById('plan-iframe');
             if(show) {
-                iframe.src = "https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html"; 
+                iframe.src = "https://halkoo.github.io/Einkaufsliste/"; 
                 overlay.style.display = 'flex';
             } else {
                 overlay.style.display = 'none';
                 iframe.src = "";
             }
+        }
+
+        function control(device) {
+            console.log("Alexa-Befehl für: " + device);
+            // Hier fügst du später deine Virtual-Button URLs ein
         }
     </script>
 </body>
