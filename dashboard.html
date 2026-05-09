@@ -2,163 +2,152 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartHome Central S8</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S8 Home Dashboard</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent: #6c5ce7;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
+            padding: 30px;
             height: 100vh;
             box-sizing: border-box;
-            overflow: hidden; /* Verhindert Scrollen der ganzen Seite */
+            /* Der bunte Hintergrund wie im Bild */
+            background: linear-gradient(135deg, #1e3a8a, #7e22ce, #be185d);
+            background-attachment: fixed;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 40px;
         }
 
-        /* Obere Sektion: Wetter & Info nebeneinander */
-        .top-row {
-            display: flex;
-            flex: 1; /* Nutzt den verfügbaren Platz */
-            gap: 15px;
-            min-height: 0; /* Wichtig für Flex-Scroll-Verhalten */
-            margin-bottom: 15px;
+        /* Glaseffekt für die Kacheln */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        /* Wetter kleiner: jetzt auf 40% Breite */
-        .weather-container {
-            flex: 4; 
-            background: var(--card-bg);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid #334155;
+        /* Linke Spalte: Uhr & Wetter */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        
+        .clock {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: left;
         }
 
-        iframe.ventusky {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Rechte Spalte: Uhr & Plan (60% Breite) */
-        .info-col {
-            flex: 6;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .widget {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 15px;
-            border: 1px solid #334155;
-            overflow: hidden;
-        }
-
-        .clock-box {
+        .weather-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 10px 25px;
+            margin-top: 10px;
         }
 
-        .clock {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--accent);
+        .weather-day { text-align: center; font-size: 0.9rem; }
+        .weather-day img { width: 40px; display: block; margin: 5px auto; }
+
+        /* Rechte Seite: Kategorien & Buttons */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
-        /* Wochenplan Fenster */
-        .meal-container {
-            flex: 1;
+        h2 { font-size: 1.2rem; margin-bottom: 15px; opacity: 0.9; }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .smart-item {
+            aspect-ratio: 1 / 1;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-        }
-
-        iframe.meal-frame {
-            width: 100%;
-            flex: 1;
-            border: none;
-            border-radius: 10px;
-            background: white; /* Besser lesbar im Plan */
-        }
-
-        /* Button Leiste fixiert am unteren Rand */
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            padding: 5px 0;
-        }
-
-        .smart-btn {
-            background: var(--card-bg);
-            border: 2px solid var(--accent);
-            color: white;
-            padding: 18px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 1rem;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .smart-btn:active {
-            background: var(--accent);
+        .smart-item:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.3); }
+        
+        .smart-item i { font-size: 2rem; margin-bottom: 10px; }
+        .smart-item span { font-size: 0.8rem; font-weight: bold; text-align: center; }
+
+        /* Wochenplan Integration */
+        .plan-box {
+            grid-column: span 2;
+            height: 300px;
+            overflow: hidden;
         }
+
+        iframe { width: 100%; height: 100%; border: none; border-radius: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="top-row">
-        <!-- LINKS: Wetter (jetzt kleiner) -->
-        <div class="weather-container">
-            <iframe class="ventusky" src="https://www.ventusky.com/?p=48.21;16.37;5&l=temperature-2m"></iframe>
+    <div class="sidebar">
+        <div class="clock" id="clock">10:33</div>
+        
+        <div class="glass-card">
+            <h2>Wetter</h2>
+            <div class="weather-row">
+                <div class="weather-day">SO<br>☀️<br>20°</div>
+                <div class="weather-day">MO<br>☁️<br>18°</div>
+                <div class="weather-day">DI<br>🌧️<br>16°</div>
+                <div class="weather-day">MI<br>☀️<br>19°</div>
+                <div class="weather-day">DO<br>⛅<br>19°</div>
+            </div>
         </div>
 
-        <!-- RECHTS: Uhr & Plan -->
-        <div class="info-col">
-            <div class="widget clock-box">
-                <div class="clock" id="clock">00:00</div>
-                <div style="text-align: right; color: #94a3b8;">S8 Dashboard</div>
-            </div>
-
-            <div class="widget meal-container">
-                <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🍴 Küchen-Plan</h3>
-                <iframe class="meal-frame" src="https://halkoo.github.io/Einkaufsliste/"></iframe>
-            </div>
+        <div class="glass-card" style="margin-top: auto; font-size: 0.9rem;">
+            <span>🎵 Spotify: <b>A Long Fall</b></span>
         </div>
     </div>
 
-    <!-- UNTEN: Buttons (immer im Blick) -->
-    <div class="controls">
-        <button class="smart-btn" onclick="control('Licht')">💡 Licht</button>
-        <button class="smart-btn" onclick="control('Heizung')">🌡️ Heizung</button>
-        <button class="smart-btn" onclick="control('TV')">📺 TV</button>
-        <button class="smart-btn" onclick="location.reload()">🔄 Refresh</button>
+    <div class="main-content">
+        <!-- Sektion Licht -->
+        <div>
+            <h2>Licht</h2>
+            <div class="button-grid">
+                <div class="smart-item">💡<span>Küche</span></div>
+                <div class="smart-item">💡<span>Wohnzimmer</span></div>
+                <div class="smart-item">💡<span>Flur</span></div>
+            </div>
+        </div>
+
+        <!-- Sektion Geräte -->
+        <div>
+            <h2>Geräte</h2>
+            <div class="button-grid">
+                <div class="smart-item">🤖<span>Roborock</span></div>
+                <div class="smart-item">📺<span>TV</span></div>
+                <div class="smart-item">🌡️<span>Heizung</span></div>
+            </div>
+        </div>
+
+        <!-- Deine Küchen-App als große Kachel -->
+        <div class="glass-card plan-box">
+            <h2>🍴 Unser Wochenplan</h2>
+            <iframe src="https://halkoo.github.io/Einkaufsliste/"></iframe>
+        </div>
     </div>
 
     <script>
-        function updateClock() {
+        function updateTime() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        function control(device) {
-            console.log(device + " gedrückt");
-        }
+        setInterval(updateTime, 1000);
+        updateTime();
     </script>
 </body>
 </html>
