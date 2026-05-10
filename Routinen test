@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step Tracker Clone</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --accent-pink: #d63384;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --green-glow: #28a745;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-color);
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-main);
+            font-weight: bold;
+        }
+
+        /* Statistik Ring */
+        .stat-circle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px;
+            position: relative;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+
+        .score-text {
+            position: absolute;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        /* Serie Section */
+        .streak-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            border: 1px solid #222;
+        }
+
+        .streak-item {
+            text-align: center;
+        }
+
+        .streak-label {
+            color: var(--text-dim);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .streak-value {
+            color: var(--accent-pink);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Input Bereich */
+        .input-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        input {
+            background: #222;
+            border: 1px solid var(--accent-pink);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 80%;
+            margin-bottom: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        button {
+            background: var(--accent-pink);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:active {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>Schritte / Statistiken</header>
+
+    <div class="stat-circle-container">
+        <svg class="progress-ring" width="200" height="200">
+            <circle class="progress-ring__background" stroke="#222" stroke-width="12" fill="transparent" r="80" cx="100" cy="100"/>
+            <circle id="progress-bar" class="progress-ring__circle" stroke="#d63384" stroke-width="12" stroke-linecap="round" fill="transparent" r="80" cx="100" cy="100"/>
+        </svg>
+        <div class="score-text" id="habit-score">0</div>
+    </div>
+
+    <div class="streak-card">
+        <div class="streak-item">
+            <div class="streak-label">Aktuell</div>
+            <div class="streak-value" id="current-streak">0 TAGE</div>
+        </div>
+        <div style="border-left: 1px solid #333;"></div>
+        <div class="streak-item">
+            <div class="streak-label">Beste(r)</div>
+            <div class="streak-value">135 TAGE</div>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <div class="streak-label">Schritte eingeben</div>
+        <input type="number" id="step-input" placeholder="13177">
+        <button onclick="updateSteps()">AKZEPTIEREN</button>
+    </div>
+</div>
+
+<script>
+    const circle = document.getElementById('progress-bar');
+    const radius = circle.r.baseVal.value;
+    const circumference = radius * 2 * Math.PI;
+
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = circumference;
+
+    function setProgress(percent) {
+        const offset = circumference - (percent / 100 * circumference);
+        circle.style.strokeDashoffset = offset;
+    }
+
+    function updateSteps() {
+        const input = document.getElementById('step-input');
+        const steps = parseInt(input.value) || 0;
+        const goal = 10000;
+        
+        // Gewohnheitsbewertung berechnen (max 100)
+        let score = Math.min(Math.floor((steps / goal) * 100), 100);
+        document.getElementById('habit-score').innerText = score;
+        setProgress(score);
+
+        // Streak Logik (vereinfacht)
+        if (steps >= goal) {
+            document.getElementById('current-streak').innerText = "1 TAG";
+            document.getElementById('current-streak').style.color = "#28a745";
+        } else {
+            document.getElementById('current-streak').innerText = "0 TAGE";
+            document.getElementById('current-streak').style.color = "#d63384";
+        }
+    }
+
+    // Initialisierung
+    setProgress(0);
+</script>
+
+</body>
+</html>
