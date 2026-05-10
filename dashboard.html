@@ -141,7 +141,7 @@
     </div>
 
     <div class="calendar-box">
-        <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
     </div>
 
     <div class="button-area">
@@ -172,7 +172,7 @@
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
             // Datum mit Wochentag
-            const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' };
+            const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '4-digit' };
             document.getElementById('date').innerText = now.toLocaleDateString('de-DE', options);
         }
         setInterval(updateTime, 1000);
@@ -183,7 +183,7 @@
             const overlay = document.getElementById('plan-overlay');
             const iframe = document.getElementById('plan-iframe');
             if(show) {
-                iframe.src = "https://halkoo.github.io/Wochenplan/"; 
+                iframe.src = "https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html"; 
                 overlay.style.display = 'flex';
             } else {
                 overlay.style.display = 'none';
