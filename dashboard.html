@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>S8 SmartHome Dashboard</title>
     <style>
-        /* Grunddesign & Hintergrund */
         :root {
             --glass: rgba(255, 255, 255, 0.12);
             --glass-border: rgba(255, 255, 255, 0.2);
             --accent: #6c5ce7;
+            --danger: #ff7675;
         }
 
         body {
@@ -22,14 +22,20 @@
             font-family: 'Segoe UI', sans-serif;
             color: white;
             display: grid;
-            /* 40% links für Wetter/Uhr, Rest rechts für Kalender */
-            grid-template-columns: 40% 1fr; 
-            grid-template-rows: 1fr auto;
+            /* Links 35% (Zeit, Wetter, Knöpfe), Rechts 65% (Kalender) */
+            grid-template-columns: 35% 1fr;
             gap: 20px;
             overflow: hidden;
         }
 
-        /* Glas-Effekt Karten */
+        /* Container Links */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -37,70 +43,37 @@
             border-radius: 30px;
             padding: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
         }
 
-        /* Uhr & Datum Bereich */
-        .time-container {
-            margin-bottom: 10px;
-            padding-left: 10px;
-        }
+        /* Zeit & Datum */
+        .time-container { padding: 10px; }
+        .clock { font-size: 5rem; font-weight: bold; line-height: 1; }
+        .date { font-size: 1.5rem; opacity: 0.8; margin-top: 5px; }
 
-        .clock {
-            font-size: 5.5rem;
-            font-weight: bold;
-            line-height: 1;
-            text-shadow: 2px 2px 15px rgba(0,0,0,0.4);
-        }
-
-        .date {
-            font-size: 1.6rem;
-            opacity: 0.9;
-            margin-top: 8px;
-            color: #f0f0f0;
-        }
-
-        /* Wetter-Fenster (Zoom-Trick gegen die Einblendungen) */
+        /* Wetter-Fokus auf Österreich (Zoom & Position) */
         .weather-widget {
-            flex-grow: 1;
+            height: 300px; /* Wetter etwas kleiner */
             padding: 0 !important;
             overflow: hidden;
             position: relative;
-            border-radius: 30px;
         }
 
         .weather-widget iframe {
             position: absolute;
-            /* Vergrößert die Karte, damit Ränder (Texte) verschwinden */
-            width: 160% !important; 
-            height: 160% !important;
-            top: -30%; 
-            left: -30%;
+            width: 180% !important; 
+            height: 180% !important;
+            /* Österreich zentrieren */
+            top: -45%; 
+            left: -40%; 
             border: none;
         }
 
-        /* Kalender-Fenster */
-        .calendar-container {
-            height: 94%; 
-            align-self: flex-start;
-        }
-
-        .calendar-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 20px;
-            /* Dark Mode für Google Kalender */
-            filter: invert(0.9) hue-rotate(180deg) opacity(0.8);
-        }
-
-        /* Untere Button-Leiste */
-        .bottom-bar {
-            grid-column: 1 / 3;
+        /* Button Bereich Links */
+        .button-grid {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
         }
 
         .action-btn {
@@ -108,106 +81,88 @@
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 18px 30px;
+            padding: 22px; /* Größere Buttons */
             border-radius: 22px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 1.1rem;
-            transition: 0.2s ease;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: 0.2s;
         }
 
-        .btn-plan { 
-            background: var(--accent); 
-            border: none; 
-            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4); 
+        .action-btn:active { transform: scale(0.96); }
+        .btn-plan { background: var(--accent); border: none; margin-top: 5px; }
+
+        /* Kalender Rechts (Monatsansicht) */
+        .calendar-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
-        .action-btn:active {
-            transform: scale(0.95);
+        .calendar-container iframe {
+            flex-grow: 1;
+            width: 100%;
+            border: none;
+            border-radius: 20px;
+            /* Dark Mode Filter */
+            filter: invert(0.9) hue-rotate(180deg) opacity(0.8);
         }
 
         /* Wochenplan Overlay */
         #plan-overlay {
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); 
-            z-index: 1000; 
-            justify-content: center; 
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
 
-        .overlay-content { 
-            width: 94%; height: 94%; 
-            background: white; 
-            border-radius: 35px; 
-            overflow: hidden; 
-            position: relative; 
-        }
-
-        .close-btn { 
-            position: absolute; 
-            top: 20px; right: 20px; 
-            background: #ff7675; 
-            color: white; 
-            border: none; 
-            padding: 15px 25px; 
-            border-radius: 15px; 
-            font-weight: bold; 
-            z-index: 1001;
-            cursor: pointer;
-        }
+        .overlay-content { width: 95%; height: 95%; background: white; border-radius: 30px; overflow: hidden; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: var(--danger); color: white; border: none; padding: 15px 25px; border-radius: 12px; font-weight: bold; cursor: pointer; z-index: 1001; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="sidebar">
         <div class="time-container">
             <div id="clock" class="clock">00:00</div>
-            <div id="date" class="date">Wochentag, 01. Januar</div>
+            <div id="date" class="date">Wochentag, 01. Jan</div>
         </div>
-        
+
         <div class="glass-card weather-widget">
-            <iframe src="https://www.ventusky.com/?p=48.21;16.37;8&l=temperature-2m"></iframe>
+            <iframe src="https://www.ventusky.com/?p=47.6;14.2;7&l=temperature-2m"></iframe>
+        </div>
+
+        <div class="button-grid">
+            <button class="action-btn" onclick="control('licht')">💡 Licht Alexa</button>
+            <button class="action-btn" onclick="control('tuer')">🔓 Schloss Alexa</button>
+            <button class="action-btn" onclick="control('heizung')">🌡️ Heizung Alexa</button>
+            <button class="action-btn btn-plan" onclick="togglePlan(true)">🍴 Wochenplan</button>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="glass-card calendar-container">
-            <h3 style="margin: 0 0 15px 0;">📅 Familien Kalender</h3>
-            <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
-        </div>
-    </div>
-
-    <div class="bottom-bar">
-        <button class="action-btn btn-plan" onclick="togglePlan(true)">🍴 Wochenplan & Liste</button>
-        <button class="action-btn" onclick="control('licht')">💡 Licht</button>
-        <button class="action-btn" onclick="control('tuer')">🔓 Tür öffnen</button>
-        <button class="action-btn" onclick="control('heizung')">🌡️ Heizung</button>
+    <div class="main-content calendar-container glass-card">
+        <h3 style="margin: 0 0 10px 0;">📅 Monatsplan</h3>
+        <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
     </div>
 
     <div id="plan-overlay">
-        <button class="close-btn" onclick="togglePlan(false)">Schließen</button>
+        <button class="close-btn" onclick="togglePlan(false)">X Schließen</button>
         <div class="overlay-content">
             <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
 
     <script>
-        // Echtzeit Uhr & Datum mit Wochentag
         function updateDateTime() {
             const now = new Date();
-            // Uhrzeit
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            // Datum (z.B. Montag, 12. Mai)
-            const options = { weekday: 'long', day: '2-digit', month: 'long' };
-            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', options);
+            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long' });
         }
         setInterval(updateDateTime, 1000);
         updateDateTime();
 
-        // Wochenplan Fenster öffnen/schließen
         function togglePlan(show) {
             const overlay = document.getElementById('plan-overlay');
             const iframe = document.getElementById('plan-iframe');
@@ -216,14 +171,13 @@
                 overlay.style.display = 'flex';
             } else {
                 overlay.style.display = 'none';
-                iframe.src = ""; // Stoppt das Laden im Hintergrund
+                iframe.src = "";
             }
         }
 
-        // Steuerung für Alexa / SmartHome
         function control(device) {
-            console.log("Sende Befehl an Alexa für: " + device);
-            // Hier kommen später deine IFTTT oder Virtual Button URLs rein
+            console.log("Befehl an Alexa: " + device);
+            // Hier kommt später der Link zu IFTTT oder deinem Alexa-Skill rein
         }
     </script>
 </body>
