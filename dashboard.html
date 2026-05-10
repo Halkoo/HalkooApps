@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S8 SmartHome Dashboard</title>
+    <title>S8 Smart Dashboard</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.12);
+            --glass: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
-            --accent: #6c5ce7;
-            --danger: #ff7675;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
 
         body {
@@ -17,151 +16,156 @@
             padding: 20px;
             height: 100vh;
             box-sizing: border-box;
-            background: linear-gradient(145deg, #1e3a8a 0%, #7e22ce 50%, #be185d 100%);
-            background-attachment: fixed;
+            background: var(--bg-gradient);
             font-family: 'Segoe UI', sans-serif;
             color: white;
             display: grid;
-            /* Links 35% (Zeit, Wetter, Knöpfe), Rechts 65% (Kalender) */
-            grid-template-columns: 35% 1fr;
+            /* Links die Buttons (ca. 220px), rechts der Rest */
+            grid-template-columns: 220px 1fr;
             gap: 20px;
             overflow: hidden;
         }
 
-        /* Container Links */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            height: 100%;
-        }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-
-        /* Zeit & Datum */
-        .time-container { padding: 10px; }
-        .clock { font-size: 5rem; font-weight: bold; line-height: 1; }
-        .date { font-size: 1.5rem; opacity: 0.8; margin-top: 5px; }
-
-        /* Wetter-Fokus auf Österreich (Zoom & Position) */
-        .weather-widget {
-            height: 300px; /* Wetter etwas kleiner */
-            padding: 0 !important;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .weather-widget iframe {
-            position: absolute;
-            width: 180% !important; 
-            height: 180% !important;
-            /* Österreich zentrieren */
-            top: -45%; 
-            left: -40%; 
-            border: none;
-        }
-
-        /* Button Bereich Links */
-        .button-grid {
+        /* LINKE SPALTE: BUTTONS */
+        .button-sidebar {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            flex-grow: 1;
         }
 
         .action-btn {
             background: var(--glass);
-            backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 22px; /* Größere Buttons */
-            border-radius: 22px;
-            font-weight: bold;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
+            backdrop-filter: blur(10px);
             transition: 0.2s;
+            text-align: center;
         }
 
-        .action-btn:active { transform: scale(0.96); }
-        .btn-plan { background: var(--accent); border: none; margin-top: 5px; }
+        .action-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.2); }
+        
+        .btn-large { padding: 30px 15px; } /* Für den Wochenplan Button */
+        .btn-accent { background: #6c5ce7; border: none; }
 
-        /* Kalender Rechts (Monatsansicht) */
-        .calendar-container {
-            height: 100%;
+        /* RECHTE SPALTE: CONTENT */
+        .main-content {
+            display: grid;
+            grid-template-rows: auto 1fr; /* Oben Uhr/Wetter, unten Kalender */
+            gap: 20px;
+        }
+
+        .top-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr; /* Uhr links, Wetter rechts */
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        /* UHR */
+        .time-card {
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .calendar-container iframe {
-            flex-grow: 1;
-            width: 100%;
+        .clock { font-size: 4.5rem; font-weight: bold; line-height: 1; }
+        .date { font-size: 1.2rem; opacity: 0.8; margin-top: 10px; }
+
+        /* WETTER */
+        .weather-card {
+            background: var(--glass);
+            border-radius: 25px;
+            overflow: hidden;
+            position: relative;
+            min-height: 250px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .weather-card iframe {
+            position: absolute;
+            width: 150% !important; /* Zoom gegen die Ventusky-Buttons */
+            height: 150% !important;
+            top: -25%;
+            left: -25%;
             border: none;
-            border-radius: 20px;
-            /* Dark Mode Filter */
-            filter: invert(0.9) hue-rotate(180deg) opacity(0.8);
         }
 
-        /* Wochenplan Overlay */
+        /* KALENDER */
+        .calendar-card {
+            background: var(--glass);
+            border-radius: 25px;
+            padding: 10px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .calendar-card iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+            filter: invert(0.9) hue-rotate(180deg) opacity(0.7);
+        }
+
+        /* WOCHENPLAN OVERLAY */
         #plan-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
-
-        .overlay-content { width: 95%; height: 95%; background: white; border-radius: 30px; overflow: hidden; position: relative; }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: var(--danger); color: white; border: none; padding: 15px 25px; border-radius: 12px; font-weight: bold; cursor: pointer; z-index: 1001; }
+        .overlay-content { width: 90%; height: 90%; background: white; border-radius: 30px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="time-container">
-            <div id="clock" class="clock">00:00</div>
-            <div id="date" class="date">Wochentag, 01. Jan</div>
-        </div>
-
-        <div class="glass-card weather-widget">
-            <iframe src="https://www.ventusky.com/?p=47.6;14.2;7&l=temperature-2m"></iframe>
-        </div>
-
-        <div class="button-grid">
-            <button class="action-btn" onclick="control('licht')">💡 Licht Alexa</button>
-            <button class="action-btn" onclick="control('tuer')">🔓 Schloss Alexa</button>
-            <button class="action-btn" onclick="control('heizung')">🌡️ Heizung Alexa</button>
-            <button class="action-btn btn-plan" onclick="togglePlan(true)">🍴 Wochenplan</button>
-        </div>
+    <div class="button-sidebar">
+        <button class="action-btn" onclick="control('heizung')">🌡️ Heizung</button>
+        <button class="action-btn" onclick="control('licht')">💡 Licht</button>
+        <button class="action-btn" onclick="control('tuer')">🔓 Tür</button>
+        
+        <div style="flex-grow: 1;"></div> <button class="action-btn btn-large btn-accent" onclick="togglePlan(true)">🍴 WOCHENPLAN</button>
+        
+        <button class="action-btn" onclick="control('spotify')">🎵 Spotify</button>
+        <button class="action-btn">+</button>
+        <button class="action-btn">+</button>
     </div>
 
-    <div class="main-content calendar-container glass-card">
-        <h3 style="margin: 0 0 10px 0;">📅 Monatsplan</h3>
-        <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+    <div class="main-content">
+        <div class="top-row">
+            <div class="time-card">
+                <div id="clock" class="clock">00:00</div>
+                <div id="date" class="date">Sonntag, 10. Mai</div>
+            </div>
+            <div class="weather-card">
+                <iframe src="https://www.ventusky.com/?p=48.21;16.37;8&l=temperature-2m"></iframe>
+            </div>
+        </div>
+
+        <div class="calendar-card">
+            <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+        </div>
     </div>
 
     <div id="plan-overlay">
-        <button class="close-btn" onclick="togglePlan(false)">X Schließen</button>
+        <button style="position:absolute; top:20px; right:20px; padding:15px; border-radius:10px; background:#ff7675; color:white; border:none; font-weight:bold;" onclick="togglePlan(false)">X Schließen</button>
         <div class="overlay-content">
             <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
 
     <script>
-        function updateDateTime() {
+        function updateTime() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long' });
+            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
         }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
+        setInterval(updateTime, 1000);
+        updateTime();
 
         function togglePlan(show) {
             const overlay = document.getElementById('plan-overlay');
@@ -176,8 +180,8 @@
         }
 
         function control(device) {
-            console.log("Befehl an Alexa: " + device);
-            // Hier kommt später der Link zu IFTTT oder deinem Alexa-Skill rein
+            console.log("Befehl: " + device);
+            // Hier kommen deine IFTTT / Alexa Links rein
         }
     </script>
 </body>
