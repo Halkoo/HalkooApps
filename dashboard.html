@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>S8 SmartHome Dashboard</title>
     <style>
+        /* Grunddesign & Hintergrund */
         :root {
             --glass: rgba(255, 255, 255, 0.12);
             --glass-border: rgba(255, 255, 255, 0.2);
@@ -13,7 +14,7 @@
 
         body {
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             height: 100vh;
             box-sizing: border-box;
             background: linear-gradient(145deg, #1e3a8a 0%, #7e22ce 50%, #be185d 100%);
@@ -21,13 +22,14 @@
             font-family: 'Segoe UI', sans-serif;
             color: white;
             display: grid;
-            /* Aufteilung links zu rechts: 40% zu 60% */
+            /* 40% links für Wetter/Uhr, Rest rechts für Kalender */
             grid-template-columns: 40% 1fr; 
             grid-template-rows: 1fr auto;
-            gap: 15px;
+            gap: 20px;
             overflow: hidden;
         }
 
+        /* Glas-Effekt Karten */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -39,36 +41,49 @@
             flex-direction: column;
         }
 
-        /* Uhr & Datum */
-        .time-container { margin-bottom: 10px; padding-left: 10px; }
-        .clock { font-size: 5rem; font-weight: bold; line-height: 1; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
-        .date { font-size: 1.5rem; opacity: 0.9; margin-top: 5px; color: #e0e0e0; }
+        /* Uhr & Datum Bereich */
+        .time-container {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
 
-        /* WETTER KACHEL - FIX GEGEN STÖRENDE TEXTE */
+        .clock {
+            font-size: 5.5rem;
+            font-weight: bold;
+            line-height: 1;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.4);
+        }
+
+        .date {
+            font-size: 1.6rem;
+            opacity: 0.9;
+            margin-top: 8px;
+            color: #f0f0f0;
+        }
+
+        /* Wetter-Fenster (Zoom-Trick gegen die Einblendungen) */
         .weather-widget {
             flex-grow: 1;
             padding: 0 !important;
-            overflow: hidden; /* Schneidet alles außerhalb der Kachel ab */
+            overflow: hidden;
             position: relative;
             border-radius: 30px;
         }
 
         .weather-widget iframe {
             position: absolute;
-            /* Wir machen das Wetter-Fenster 50% größer als die Kachel */
-            width: 150% !important; 
-            height: 150% !important;
-            /* Wir schieben es um 25% nach außen, um die Ränder (Texte) zu verstecken */
-            top: -25%; 
-            left: -25%;
+            /* Vergrößert die Karte, damit Ränder (Texte) verschwinden */
+            width: 160% !important; 
+            height: 160% !important;
+            top: -30%; 
+            left: -30%;
             border: none;
         }
 
-        /* KALENDER KACHEL */
+        /* Kalender-Fenster */
         .calendar-container {
             height: 94%; 
             align-self: flex-start;
-            margin-right: 10px;
         }
 
         .calendar-container iframe {
@@ -76,17 +91,16 @@
             height: 100%;
             border: none;
             border-radius: 20px;
-            /* Macht den weißen Google Kalender dunkel */
+            /* Dark Mode für Google Kalender */
             filter: invert(0.9) hue-rotate(180deg) opacity(0.8);
         }
 
-        /* BUTTONS UNTEN */
+        /* Untere Button-Leiste */
         .bottom-bar {
             grid-column: 1 / 3;
             display: flex;
-            gap: 12px;
-            margin-top: 5px;
-            padding-bottom: 5px;
+            gap: 15px;
+            margin-top: 10px;
         }
 
         .action-btn {
@@ -94,18 +108,123 @@
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 18px 28px;
-            border-radius: 20px;
+            padding: 18px 30px;
+            border-radius: 22px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 1rem;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.1rem;
+            transition: 0.2s ease;
         }
 
-        .btn-plan { background: var(--accent); border: none; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); }
-        .action-btn:active { transform: scale(0.95); }
+        .btn-plan { 
+            background: var(--accent); 
+            border: none; 
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4); 
+        }
 
-        /* WOCHENPLAN
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Wochenplan Overlay */
+        #plan-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); 
+            z-index: 1000; 
+            justify-content: center; 
+            align-items: center;
+        }
+
+        .overlay-content { 
+            width: 94%; height: 94%; 
+            background: white; 
+            border-radius: 35px; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        .close-btn { 
+            position: absolute; 
+            top: 20px; right: 20px; 
+            background: #ff7675; 
+            color: white; 
+            border: none; 
+            padding: 15px 25px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            z-index: 1001;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="time-container">
+            <div id="clock" class="clock">00:00</div>
+            <div id="date" class="date">Wochentag, 01. Januar</div>
+        </div>
+        
+        <div class="glass-card weather-widget">
+            <iframe src="https://www.ventusky.com/?p=48.21;16.37;8&l=temperature-2m"></iframe>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="glass-card calendar-container">
+            <h3 style="margin: 0 0 15px 0;">📅 Familien Kalender</h3>
+            <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="action-btn btn-plan" onclick="togglePlan(true)">🍴 Wochenplan & Liste</button>
+        <button class="action-btn" onclick="control('licht')">💡 Licht</button>
+        <button class="action-btn" onclick="control('tuer')">🔓 Tür öffnen</button>
+        <button class="action-btn" onclick="control('heizung')">🌡️ Heizung</button>
+    </div>
+
+    <div id="plan-overlay">
+        <button class="close-btn" onclick="togglePlan(false)">Schließen</button>
+        <div class="overlay-content">
+            <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Echtzeit Uhr & Datum mit Wochentag
+        function updateDateTime() {
+            const now = new Date();
+            // Uhrzeit
+            document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            // Datum (z.B. Montag, 12. Mai)
+            const options = { weekday: 'long', day: '2-digit', month: 'long' };
+            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', options);
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Wochenplan Fenster öffnen/schließen
+        function togglePlan(show) {
+            const overlay = document.getElementById('plan-overlay');
+            const iframe = document.getElementById('plan-iframe');
+            if(show) {
+                iframe.src = "https://halkoo.github.io/Wochenplan/"; 
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+                iframe.src = ""; // Stoppt das Laden im Hintergrund
+            }
+        }
+
+        // Steuerung für Alexa / SmartHome
+        function control(device) {
+            console.log("Sende Befehl an Alexa für: " + device);
+            // Hier kommen später deine IFTTT oder Virtual Button URLs rein
+        }
+    </script>
+</body>
+</html>
