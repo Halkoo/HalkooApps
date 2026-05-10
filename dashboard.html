@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Home S8</title>
+    <title>Smart Home Dashboard S8</title>
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.1);
@@ -20,8 +20,8 @@
             font-family: 'Segoe UI', sans-serif;
             color: white;
             display: grid;
-            /* Layout: Linke Spalte (Uhr/Wetter) ca. 40%, Rechte Spalte (Kalender) 60% */
-            grid-template-columns: 1fr 1.5fr;
+            /* Layout: Links ca. 42%, Rechts ca. 58% */
+            grid-template-columns: 1fr 1.4fr;
             grid-template-rows: auto 1fr auto; 
             gap: 20px;
             overflow: hidden;
@@ -33,25 +33,29 @@
             grid-row: 1;
             padding: 10px;
         }
-        .clock { font-size: 5.5rem; font-weight: bold; line-height: 1; }
+        .clock { font-size: 5.5rem; font-weight: bold; line-height: 1; margin: 0; }
         .date { font-size: 1.5rem; opacity: 0.8; margin-top: 5px; }
 
-        /* 2. RECHTS: GROSSER KALENDER */
+        /* 2. RECHTS: GROSSER KALENDER (MONATSANSICHT) */
         .calendar-box {
             grid-column: 2;
-            grid-row: 1 / span 2; /* Geht über zwei Reihen nach unten */
+            grid-row: 1 / span 2;
             background: var(--glass);
             border-radius: 30px;
             border: 1px solid var(--glass-border);
-            padding: 15px;
+            padding: 10px;
             overflow: hidden;
         }
         .calendar-box iframe {
-            width: 100%; height: 100%; border: none; border-radius: 20px;
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            border-radius: 20px;
+            /* Macht den Kalender dunkel/passend zum Design */
             filter: invert(0.9) hue-rotate(180deg) opacity(0.7);
         }
 
-        /* 3. LINKS UNTER UHR: WETTER */
+        /* 3. LINKS UNTER UHR: WETTER (RADAR ÖSTERREICH) */
         .weather-box {
             grid-column: 1;
             grid-row: 2;
@@ -61,21 +65,20 @@
             overflow: hidden;
             position: relative;
         }
-        /* Trick: Wetter vergrößern und Ränder abschneiden */
         .weather-box iframe {
             position: absolute;
-            width: 160% !important;
-            height: 160% !important;
-            top: -30%;
-            left: -30%;
+            /* Starker Zoom, um Menüs von Ventusky zu verstecken */
+            width: 170% !important;
+            height: 170% !important;
+            top: -35%;
+            left: -35%;
             border: none;
         }
 
-        /* 4. UNTEN: BUTTONS */
+        /* 4. UNTEN: BUTTON-BEREICH */
         .button-area {
             grid-column: 1 / span 2;
             display: grid;
-            /* Deine zwei Reihen aus der Skizze */
             grid-template-columns: repeat(6, 1fr);
             gap: 15px;
             padding-top: 10px;
@@ -92,18 +95,38 @@
             cursor: pointer;
             text-align: center;
             font-size: 0.9rem;
+            transition: 0.2s;
         }
 
-        /* Breiter Wochenplan-Button aus deiner Skizze */
-        .btn-wide { grid-column: span 2; background: var(--accent); border: none; font-size: 1.1rem; }
-        .action-btn:active { transform: scale(0.95); }
+        /* Breiter lila Button für den Wochenplan */
+        .btn-wide { 
+            grid-column: span 2; 
+            background: var(--accent); 
+            border: none; 
+            font-size: 1.1rem; 
+        }
 
-        /* Overlay für Wochenplan */
+        .action-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.2); }
+
+        /* WOCHENPLAN OVERLAY */
         #plan-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); 
+            z-index: 1000; 
+            justify-content: center; 
+            align-items: center;
         }
-        .overlay-content { width: 92%; height: 92%; background: white; border-radius: 35px; overflow: hidden; }
+        .overlay-content { 
+            width: 94%; 
+            height: 92%; 
+            background: white; 
+            border-radius: 35px; 
+            overflow: hidden; 
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -114,18 +137,19 @@
     </div>
 
     <div class="weather-box">
-        <iframe src="https://www.ventusky.com/?p=48.21;16.37;8&l=temperature-2m"></iframe>
+        <iframe src="https://www.ventusky.com/?p=47.7;13.3;5&l=radar"></iframe>
     </div>
 
     <div class="calendar-box">
-        <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+        <iframe src="https://calendar.google.com/calendar/embed?src=halkoo%40gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
     </div>
 
     <div class="button-area">
         <button class="action-btn" onclick="control('licht')">💡 Licht</button>
         <button class="action-btn" onclick="control('tuer')">🔓 Tür</button>
         <button class="action-btn btn-wide" onclick="togglePlan(true)">🍴 Wochenplan</button>
-        <button class="action-btn"></button> <button class="action-btn"></button>
+        <button class="action-btn"></button> 
+        <button class="action-btn"></button>
 
         <button class="action-btn" onclick="control('heizung')">🌡️ Heizung</button>
         <button class="action-btn">+</button>
@@ -136,21 +160,25 @@
     </div>
 
     <div id="plan-overlay">
-        <button style="position:absolute; top:20px; right:20px; padding:15px; background:#ff7675; color:white; border:none; border-radius:10px; font-weight:bold;" onclick="togglePlan(false)">X Schließen</button>
+        <button style="position:absolute; top:25px; right:25px; padding:15px 25px; background:#ff7675; color:white; border:none; border-radius:15px; font-weight:bold; z-index:1001; cursor:pointer;" onclick="togglePlan(false)">Schließen X</button>
         <div class="overlay-content">
             <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
 
     <script>
+        // Uhrzeit-Funktion
         function updateTime() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' });
+            // Datum mit Wochentag
+            const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' };
+            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', options);
         }
         setInterval(updateTime, 1000);
         updateTime();
 
+        // Wochenplan Steuerung
         function togglePlan(show) {
             const overlay = document.getElementById('plan-overlay');
             const iframe = document.getElementById('plan-iframe');
@@ -159,11 +187,15 @@
                 overlay.style.display = 'flex';
             } else {
                 overlay.style.display = 'none';
-                iframe.src = "";
+                iframe.src = ""; // Stoppt das Laden im Hintergrund
             }
         }
 
-        function control(dev) { console.log("Befehl an: " + dev); }
+        // Platzhalter für Smart Home Steuerung
+        function control(dev) { 
+            console.log("Sende Befehl an: " + dev); 
+            // Hier kannst du später deine URLs für Alexa/IFTTT einfügen
+        }
     </script>
 </body>
 </html>
