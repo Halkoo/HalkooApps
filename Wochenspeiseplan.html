@@ -1,131 +1,98 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wochenspeiseplan</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-
+        body { font-family: sans-serif; background-color: #f0f0f0; padding: 10px; }
+        
         .einkauf-btn {
-            display: block;
-            width: 100%;
-            background: #2ecc71;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            text-decoration: none;
-            margin-bottom: 20px;
+            display: block; width: 100%; background-color: #27ae60; color: white;
+            text-align: center; padding: 15px; border-radius: 5px;
+            text-decoration: none; font-weight: bold; margin-bottom: 15px;
         }
 
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .tag-card {
+            background: white; border-radius: 5px; margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); overflow: hidden;
         }
 
         .tag-header {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            background-color: #27ae60; color: white; padding: 10px;
+            font-weight: bold; font-size: 1.2rem;
         }
 
-        .label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-
-        .content {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .recipe {
-            font-size: 0.9rem;
-            color: #34495e;
-            background: #ecf0f1;
-            padding: 5px;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
+        .tag-body { padding: 10px; }
+        .label { color: #777; font-size: 0.8rem; font-weight: bold; }
+        .content { font-size: 1.1rem; margin-bottom: 8px; }
+        .recipe { font-style: italic; color: #555; border-top: 1px solid #eee; pt: 5px; }
     </style>
 </head>
 <body>
 
     <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
 
-    <div class="card">
-        <div class="tag-header">Montag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Crunchy Feta & Pommes</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Protein Schokobrötchen</div>
-        <div class="recipe">Feta panieren, Airfryer 12 Min. bei 200°C.</div>
+    <div class="tag-card">
+        <div class="tag-header">MONTAG</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Crunchy Feta & Pommes</div>
+            <div class="label">NACHSPEISE</div><div class="content">Protein Schokobrötchen</div>
+            <div class="recipe">Feta panieren, Airfryer 12 Min. bei 200°C.</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Dienstag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Protein Spätzle-Pfanne</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Skyr mit Beeren</div>
-        <div class="recipe">Hack braten, Spätzle dazu, Käse schmelzen.</div>
+    <div class="tag-card">
+        <div class="tag-header">DIENSTAG</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Protein Spätzle-Pfanne</div>
+            <div class="label">NACHSPEISE</div><div class="content">Skyr mit Beeren</div>
+            <div class="recipe">Hack braten, Spätzle dazu, Käse schmelzen.</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Mittwoch</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Cremige Garnelen-Pasta</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Quark-Auflauf</div>
-        <div class="recipe">Garnelen braten, Frischkäse-Sauce zu Pasta.</div>
+    <div class="tag-card">
+        <div class="tag-header">MITTWOCH</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Cremige Garnelen-Pasta</div>
+            <div class="label">NACHSPEISE</div><div class="content">Quark-Auflauf</div>
+            <div class="recipe">Garnelen braten, Frischkäse-Sauce dazu.</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Donnerstag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Chicken Fajita Bowl</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Schoko-Quark-Pudding</div>
-        <div class="recipe">Hähnchen & Paprika braten, Reis dazu.</div>
+    <div class="tag-card">
+        <div class="tag-header">DONNERSTAG</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Chicken Fajita Bowl</div>
+            <div class="label">NACHSPEISE</div><div class="content">Schoko-Quark-Pudding</div>
+            <div class="recipe">Hähnchen & Paprika braten, auf Reis.</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Freitag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Protein Thunfisch-Pizza</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Apfel mit Erdnussmus</div>
-        <div class="recipe">Quark-Teig belegen, 12 Min. bei 220°C backen.</div>
+    <div class="tag-card">
+        <div class="tag-header">FREITAG</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Protein Thunfisch-Pizza</div>
+            <div class="label">NACHSPEISE</div><div class="content">Apfel mit Erdnussmus</div>
+            <div class="recipe">Quark-Teig belegen, 12 Min. backen.</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Samstag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Garnelen-Bowl mit Kartoffel</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Mango-Lassi (Protein)</div>
-        <div class="recipe">Kartoffelwürfel backen, Garnelen braten.</div>
+    <div class="tag-card">
+        <div class="tag-header">SAMSTAG</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Garnelen-Bowl mit Kartoffel</div>
+            <div class="label">NACHSPEISE</div><div class="content">Mango-Lassi (Protein)</div>
+            <div class="recipe">Kartoffelwürfel backen, Garnelen braten.</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Sonntag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Sonntagsessen nach Wahl</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Eis mit heißen Beeren</div>
-        <div class="recipe">Gemütlich kochen oder bestellen.</div>
+    <div class="tag-card">
+        <div class="tag-header">SONNTAG</div>
+        <div class="tag-body">
+            <div class="label">HAUPTSPEISE</div><div class="content">Sonntagsessen nach Wahl</div>
+            <div class="label">NACHSPEISE</div><div class="content">Eis mit heißen Beeren</div>
+            <div class="recipe">Gemütlich kochen oder bestellen.</div>
+        </div>
     </div>
 
 </body>
