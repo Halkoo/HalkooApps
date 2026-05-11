@@ -47,4 +47,118 @@
             background: rgba(0,0,0,0.4);
             border-radius: 25px;
             overflow: hidden;
-            border: 1px solid rgba(25
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .weather-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 22px;
+            border-radius: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            transition: transform 0.1s;
+        }
+        
+        .btn:active { transform: scale(0.97); }
+
+        .btn-plan { background-color: #6366f1; } /* Indigo Lila */
+        .btn-spotify { background-color: #1DB954; } /* Spotify Grün */
+
+        /* RECHTE SEITE (65% Breite - KALENDER) */
+        .main-panel {
+            width: 65%;
+            margin-left: 25px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 35px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .main-panel iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="side-panel">
+        <div class="header">
+            <div id="clock">00:00</div>
+            <div id="date">Lädt...</div>
+        </div>
+
+        <div class="weather-container">
+            <iframe src="https://www.ventusky.com/?p=47.81;13.04;5&l=radar"></iframe>
+        </div>
+
+        <div class="btn-group">
+            <a href="https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html" class="btn btn-plan">🍴 Wochenplan</a>
+            
+            <a href="intent://open#Intent;scheme=spotify;package=com.spotify.music;end" class="btn btn-spotify">🎧 Spotify</a>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312%40gmail.com&ctz=Europe%2FBerlin&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showNav=1"></iframe>
+    </div>
+
+    <script>
+        // 1. UHRZEIT & DATUM FUNKTION
+        function updateDisplay() {
+            const now = new Date();
+            
+            // Zeit
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = h + ":" + m;
+            
+            // Datum
+            const options = { weekday: 'long', day: '2-digit', month: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('de-DE', options);
+        }
+
+        // 2. AUTOMATISCHE AKTUALISIERUNG (Refresh)
+        // Lädt die gesamte Seite alle 15 Minuten neu (900.000 ms)
+        function setupAutoRefresh() {
+            setTimeout(function() {
+                location.reload();
+            }, 900000);
+        }
+
+        // 3. FULLY KIOSK CACHE CONTROL
+        // Löscht beim Laden den Cache, damit Google Tabellen-Daten immer frisch sind
+        window.onload = function() {
+            if (typeof fully !== 'undefined') {
+                fully.clearCache();
+            }
+        };
+
+        // Starten
+        setInterval(updateDisplay, 1000);
+        updateDisplay();
+        setupAutoRefresh();
+    </script>
+</body>
+</html>
