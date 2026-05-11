@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wochenplan</title>
+    <title>Küchen-App All-In-One</title>
     <style>
+        :root {
+            --primary-lila: #6c5ce7;
+            --secondary-green: #63b39d;
+            --bg-color: #f0f2f5;
+            --text-dark: #2d3436;
+        }
+
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
             display: flex;
@@ -15,111 +22,189 @@
             align-items: center;
         }
 
-        .einkauf-btn {
-            background-color: #63b39d;
+        h1 { color: var(--text-dark); margin-bottom: 20px; }
+
+        /* Header Button */
+        .open-list-btn {
+            background-color: var(--secondary-green);
             color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            padding: 18px;
+            border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            border: none;
+            cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-        }
+        /* Wochenplan Karten */
+        #plan-container { width: 100%; max-width: 500px; }
 
         .card {
             background: white;
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 20px;
-            margin-bottom: 15px;
-            border-left: 10px solid #6c5ce7;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 15px solid var(--primary-lila);
+            position: relative;
         }
 
-        .tag-header {
-            font-size: 1.4rem;
+        .tag-name {
+            font-size: 1.6rem;
             font-weight: bold;
-            color: #6c5ce7;
+            color: var(--primary-lila);
             margin-bottom: 10px;
-            border-bottom: 1px solid #f0f2f5;
-            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
         }
 
-        .label {
-            font-size: 0.75rem;
-            color: #e67e22;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 10px;
-        }
+        .label { font-size: 0.75rem; font-weight: bold; color: #e67e22; margin-top: 12px; text-transform: uppercase; }
+        .meal-text { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); margin-top: 4px; }
 
-        .content {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d3436;
-        }
+        .details { display: none; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; }
 
         .recipe-btn {
-            display: block;
-            margin-top: 15px;
-            padding: 10px;
-            text-align: center;
-            border: 2px solid #6c5ce7;
-            color: #6c5ce7;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: bold;
+            display: block; width: 100%; background: white; border: 2px solid var(--primary-lila);
+            color: var(--primary-lila); padding: 10px; border-radius: 12px; margin-top: 15px;
+            text-align: center; font-weight: bold; cursor: pointer;
         }
+
+        /* OVERLAY SYSTEM */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay-content {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            border-radius: 25px;
+            padding: 25px;
+            overflow-y: auto;
+            position: relative;
+            border-left: 15px solid var(--secondary-green);
+        }
+
+        .close-btn {
+            background: #ff7675;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            float: right;
+            cursor: pointer;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f2f5;
+            cursor: pointer;
+        }
+
+        .checkbox { width: 22px; height: 22px; border: 2px solid var(--secondary-green); border-radius: 6px; margin-right: 15px; }
+        .done .checkbox { background-color: var(--secondary-green); }
+        .done .item-text { text-decoration: line-through; color: #b2bec3; }
     </style>
 </head>
 <body>
 
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
+    <h1>🍴 Unser Küchen-Plan</h1>
 
-    <div class="container" id="plan-container">
+    <button class="open-list-btn" onclick="openShoppingList()">🛒 Einkaufsliste öffnen</button>
+
+    <div id="plan-container">Lade Wochenplan...</div>
+
+    <div id="overlay">
+        <div class="overlay-content">
+            <button class="close-btn" onclick="closeShoppingList()">Schließen</button>
+            <h2 style="color: var(--secondary-green);">Einkaufsliste</h2>
+            <div id="shopping-list-content">Lade Liste...</div>
         </div>
+    </div>
 
     <script>
-        // DEINE TABELLEN-ID (die aus deinem Link von vorhin)
-        const sheetId = '1vVp1w07pE9kX57M-L8vXoU5O5XU-m1I8hXN9XF5XWk8';
-        const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+        const sheetId = '14N2waZuQo-CaowyNgu20QvgoQdBaWWxnzggkoo9BXo8';
+        const planUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=0`;
+        const listUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=1056757043`;
 
-        fetch(base)
-            .then(res => res.text())
-            .then(data => {
-                const json = JSON.parse(data.substr(47).slice(0, -2));
-                const rows = json.table.rows;
-                const container = document.getElementById('plan-container');
-                container.innerHTML = '';
+        // WOCHENPLAN LADEN
+        function loadPlan() {
+            fetch(planUrl)
+                .then(res => res.text())
+                .then(data => {
+                    const json = JSON.parse(data.substr(47).slice(0, -2));
+                    const rows = json.table.rows;
+                    let html = '';
+                    rows.forEach((row, index) => {
+                        const tag = row.c[0]?.v || '';
+                        const haupt = row.c[1]?.v || '';
+                        const nach = row.c[2]?.v || '';
+                        const info = row.c[3]?.v || 'Keine Details vorhanden.';
 
-                rows.forEach(row => {
-                    const tag = row.c[0] ? row.c[0].v : '';
-                    const haupt = row.c[1] ? row.c[1].v : '';
-                    const nach = row.c[2] ? row.c[2].v : '';
-
-                    if(tag && tag !== "Tag") {
-                        const card = `
-                            <div class="card">
-                                <div class="tag-header">${tag}</div>
-                                <div class="label">HAUPTSPEISE</div>
-                                <div class="content">${haupt}</div>
-                                <div class="label">NACHSPEISE</div>
-                                <div class="content">${nach}</div>
-                                <a href="#" class="recipe-btn">ANLEITUNG ANZEIGEN</a>
-                            </div>
-                        `;
-                        container.innerHTML += card;
-                    }
+                        if(tag && tag !== "Tag") {
+                            html += `
+                                <div class="card">
+                                    <div class="tag-name">${tag}</div>
+                                    <div class="label">HAUPTSPEISE</div>
+                                    <div class="meal-text">${haupt}</div>
+                                    <div class="label">NACHSPEISE</div>
+                                    <div class="meal-text">${nach}</div>
+                                    <div class="details" id="details-${index}">${info}</div>
+                                    <button class="recipe-btn" onclick="toggleDetails(${index})">Anleitung anzeigen →</button>
+                                </div>`;
+                        }
+                    });
+                    document.getElementById('plan-container').innerHTML = html;
                 });
-            })
-            .catch(err => console.error("Fehler beim Laden:", err));
+        }
+
+        // EINKAUFSLISTE LADEN (Overlay)
+        function openShoppingList() {
+            document.getElementById('overlay').style.display = 'flex';
+            fetch(listUrl)
+                .then(res => res.text())
+                .then(data => {
+                    const json = JSON.parse(data.substr(47).slice(0, -2));
+                    const rows = json.table.rows;
+                    let html = '';
+                    rows.forEach(row => {
+                        const zutat = row.c[0]?.v || '';
+                        if(zutat && zutat !== "Zutat") {
+                            html += `
+                                <div class="item-row" onclick="this.classList.toggle('done')">
+                                    <div class="checkbox"></div>
+                                    <div class="item-text">${zutat}</div>
+                                </div>`;
+                        }
+                    });
+                    document.getElementById('shopping-list-content').innerHTML = html;
+                });
+        }
+
+        function closeShoppingList() { document.getElementById('overlay').style.display = 'none'; }
+        function toggleDetails(id) {
+            const el = document.getElementById(`details-${id}`);
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Start
+        loadPlan();
     </script>
 </body>
 </html>
