@@ -6,10 +6,12 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f0f0;
+            margin: 0;
             padding: 20px;
         }
-        .btn-einkauf {
+
+        .einkauf-btn {
             display: block;
             width: 100%;
             background-color: #27ae60;
@@ -21,88 +23,93 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
-        .tag-container {
+
+        .tag-card {
             background-color: white;
+            border-radius: 8px;
             padding: 15px;
             margin-bottom: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .tag-name {
-            font-size: 1.2em;
+
+        .tag-title {
+            font-size: 1.2rem;
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
         }
-        .info-label {
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 5px;
+
+        .label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: bold;
         }
-        .food-text {
-            font-size: 1.1em;
+
+        .meal {
+            font-size: 1.1rem;
             margin-bottom: 10px;
+            color: #000;
         }
     </style>
 </head>
 <body>
 
-    <a href="Einkaufsliste.html" class="btn-einkauf">🛒 ZUR EINKAUFSLISTE</a>
+    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
 
-    <div class="tag-container">
-        <div class="tag-name">Montag</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Crunchy Feta & Pommes</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Protein Schokobrötchen</div>
+    <div class="tag-card">
+        <div class="tag-title">Montag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Crunchy Feta & Pommes</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Protein Schokobrötchen</div>
     </div>
 
-    <div class="tag-container">
-        <div class="tag-name">Dienstag</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Protein Spätzle-Pfanne</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Skyr mit Beeren</div>
+    <div class="tag-card">
+        <div class="tag-title">Dienstag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Protein Spätzle-Pfanne</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Skyr mit Beeren</div>
     </div>
 
-    <div class="tag-container">
-        <div class="tag-name">Mittwoch</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Cremige Garnelen-Pasta</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Quark-Auflauf</div>
+    <div class="tag-card">
+        <div class="tag-title">Mittwoch</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Cremige Garnelen-Pasta</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Quark-Auflauf</div>
     </div>
 
-    <div class="tag-container">
-        <div class="tag-name">Donnerstag</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Chicken Fajita Bowl</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Schoko-Quark-Pudding</div>
+    <div class="tag-card">
+        <div class="tag-title">Donnerstag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Chicken Fajita Bowl</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Schoko-Quark-Pudding</div>
     </div>
 
-    <div class="tag-container">
-        <div class="tag-name">Freitag</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Protein Thunfisch-Pizza</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Apfel mit Erdnussmus</div>
+    <div class="tag-card">
+        <div class="tag-title">Freitag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Protein Thunfisch-Pizza</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Apfel mit Erdnussmus</div>
     </div>
 
-    <div class="tag-container">
-        <div class="tag-name">Samstag</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Garnelen-Bowl mit Kartoffel</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Mango-Lassi (Protein)</div>
+    <div class="tag-card">
+        <div class="tag-title">Samstag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Garnelen-Bowl mit Kartoffel</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Mango-Lassi (Protein)</div>
     </div>
 
-    <div class="tag-container">
-        <div class="tag-name">Sonntag</div>
-        <div class="info-label">HAUPTSPEISE</div>
-        <div class="food-text">Sonntagsessen nach Wahl</div>
-        <div class="info-label">NACHSPEISE</div>
-        <div class="food-text">Eis mit heißen Beeren</div>
+    <div class="tag-card">
+        <div class="tag-title">Sonntag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Sonntagsessen nach Wahl</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Eis mit heißen Beeren</div>
     </div>
 
 </body>
