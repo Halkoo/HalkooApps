@@ -3,90 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0f172a">
-    
     <title>Smart Home Dashboard</title>
     <style>
-        :root {
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+        :root { 
+            --glass: rgba(255, 255, 255, 0.1); 
+            --glass-border: rgba(255, 255, 255, 0.2); 
+            --spotify-green: #1DB954;
         }
 
-        body {
-            margin: 0; padding: 20px; height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            font-family: 'Segoe UI', sans-serif; color: white;
-            display: grid;
-            grid-template-columns: 1fr 1.4fr;
-            grid-template-rows: auto 1fr 200px;
-            gap: 20px; overflow: hidden;
-            box-sizing: border-box;
+        body { 
+            margin: 0; padding: 20px; height: 100vh; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+            font-family: 'Segoe UI', sans-serif; color: white; 
+            display: grid; 
+            grid-template-columns: 1fr 1.4fr; 
+            grid-template-rows: auto auto 1fr; /* Angepasst für kleinere Wetter-Box */
+            gap: 20px; overflow: hidden; box-sizing: border-box; 
         }
 
         /* 1. UHRZEIT & DATUM */
-        .time-box { grid-column: 1; padding: 10px; }
-        .clock { font-size: 5.5rem; font-weight: bold; margin: 0; }
-        .date { font-size: 1.5rem; opacity: 0.8; }
-
-        /* 2. KALENDER (Rechts) - Hier sind jetzt beide IDs drin */
-        .calendar-box {
-            grid-column: 2; grid-row: 1 / span 2;
-            background: var(--glass); border-radius: 30px; border: 1px solid var(--glass-border);
-            padding: 10px;
-        }
-        .calendar-box iframe {
-            width: 100%; height: 100%; border: none; border-radius: 20px;
-            /* Invert-Filter macht den Google Kalender dunkel/passend zum Design */
-            filter: invert(0.9) hue-rotate(180deg) opacity(0.7);
+        .time-box { grid-column: 1; padding: 10px; display: flex; flex-direction: column; }
+        .clock { font-size: 6.5rem; font-weight: bold; margin: 0; line-height: 1; }
+        .date { 
+            font-size: 2.2rem; /* Größer */
+            font-weight: 800; /* Fett */
+            margin-top: 10px; 
+            color: #a29bfe; 
+            letter-spacing: 1px;
         }
 
-        /* 3. WETTER RADAR */
-        .weather-box {
-            grid-column: 1; grid-row: 2;
-            background: var(--glass); border-radius: 30px; border: 1px solid var(--glass-border);
-            overflow: hidden; position: relative;
+        /* 2. KALENDER */
+        .calendar-box { 
+            grid-column: 2; grid-row: 1 / span 3; 
+            background: var(--glass); border-radius: 30px; border: 1px solid var(--glass-border); 
+            padding: 10px; overflow: hidden; 
         }
-        .weather-box iframe {
-            position: absolute; width: 170%; height: 170%; top: -35%; left: -35%; border: none;
+        .calendar-box iframe { width: 100%; height: 100%; border: none; border-radius: 20px; filter: invert(0.9) hue-rotate(180deg) opacity(0.85); }
+
+        /* 3. WETTER RADAR (Kleiner) */
+        .weather-box { 
+            grid-column: 1; grid-row: 2; 
+            height: 250px; /* Festgelegte kleinere Höhe */
+            background: var(--glass); border-radius: 30px; border: 1px solid var(--glass-border); 
+            overflow: hidden; position: relative; 
+        }
+        .weather-box iframe { position: absolute; width: 180%; height: 180%; top: -40%; left: -40%; border: none; }
+
+        /* 4. BUTTON BEREICH (Wochenplan & Spotify) */
+        .button-area { 
+            grid-column: 1; grid-row: 3; 
+            display: flex; flex-direction: column; 
+            gap: 15px; justify-content: flex-start; padding-top: 10px;
         }
 
-        /* 4. UNTERER BEREICH (Wochenplan & Info) */
-        .widget-placeholder {
-            grid-column: 1 / span 2;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .wochenplan-btn {
-            background: #6c5ce7; border: none; color: white;
-            padding: 25px 55px; border-radius: 25px; font-weight: bold;
-            cursor: pointer; font-size: 1.3rem; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        .btn { 
+            border: none; color: white; padding: 18px; 
+            border-radius: 20px; font-weight: bold; cursor: pointer; 
+            font-size: 1.1rem; text-align: center; text-decoration: none;
             transition: transform 0.1s;
         }
-        .wochenplan-btn:active { transform: scale(0.95); }
+        .btn:active { transform: scale(0.98); }
 
-        /* POPUP FÜR WOCHENPLAN */
-        #plan-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
+        .wochenplan-btn { background: #6c5ce7; width: 100%; }
+        .spotify-btn { 
+            background: var(--spotify-green); 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .overlay-content { width: 94%; height: 92%; background: white; border-radius: 35px; overflow: hidden; position: relative; }
-        .close-btn {
-            position: absolute; top: 20px; right: 20px; z-index: 1001;
-            padding: 15px 25px; background: #ff7675; color: white; border: none; border-radius: 15px; font-weight: bold;
-        }
+
+        /* OVERLAY FÜR WOCHENPLAN */
+        #plan-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .overlay-content { width: 95%; height: 90%; background: white; border-radius: 30px; overflow: hidden; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; padding: 10px 20px; background: #ff7675; color: white; border: none; border-radius: 10px; cursor: pointer; z-index: 1100; }
     </style>
 </head>
 <body>
 
     <div class="time-box">
         <div id="clock" class="clock">00:00</div>
-        <div id="date">Lade...</div>
+        <div id="date" class="date">Wird geladen...</div>
     </div>
 
     <div class="weather-box">
@@ -94,40 +91,10 @@
     </div>
 
     <div class="calendar-box">
-        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&src=c366726f2240200ceddc4682c9f164245967bcd7cb235ea9d8dad27f9fa8ee82%40group.calendar.google.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&src=c366726f2240200ceddc4682c9f164245967bcd7cb235ea9d8dad27f9fa8ee82@group.calendar.google.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=1&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
     </div>
 
-    <div class="widget-placeholder">
-        <button class="wochenplan-btn" onclick="togglePlan(true)">🍴 WOCHENPLAN</button>
-    </div>
-
-    <div id="plan-overlay">
-        <button class="close-btn" onclick="togglePlan(false)">Schließen X</button>
-        <div class="overlay-content">
-            <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
-        </div>
-    </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' });
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        function togglePlan(show) {
-            const overlay = document.getElementById('plan-overlay');
-            const iframe = document.getElementById('plan-iframe');
-            if(show) {
-                iframe.src = "https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html"; 
-                overlay.style.display = 'flex';
-            } else {
-                overlay.style.display = 'none';
-                iframe.src = "";
-            }
-        }
-    </script>
-</body>
-</html>
+    <div class="button-area">
+        <button class="btn wochenplan-btn" onclick="togglePlan(true)">🍴 WOCHENPLAN</button>
+        <a href="intent://open#Intent;scheme=spotify;package=com.spotify.music;end" class="btn spotify-btn">
+            <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.59,14.42a.63.63,0,0,1-.86.21c-2.34-1.43-5.28-1.75-8.74-.96a.63.63,0,0,1-.28-1.23c3.78-.86,7-1.48,9.67.1
