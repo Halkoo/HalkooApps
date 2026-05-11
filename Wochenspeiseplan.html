@@ -5,188 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wochenspeiseplan</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            color: #2c3e50;
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        
+        /* HEADER BEREICH MIT BUTTON */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
-            font-weight: bold;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        /* GRID-LAYOUT: Sorgt dafür, dass die Tage nebeneinander stehen */
+        h1 { margin: 0; color: #2c3e50; font-size: 1.5rem; }
+
+        .einkauf-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        /* GRID-LAYOUT */
         .container {
             display: grid;
-            /* Erstellt automatisch Spalten mit mind. 300px Breite */
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            max-width: 100%;
-            margin: 0 auto;
         }
 
         .card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 20px;
-            border-left: 8px solid #6c5ce7; /* Lila Akzentstreifen */
-            display: flex;
-            flex-direction: column;
+            background: white; border-radius: 15px; padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-left: 8px solid #6c5ce7;
+            display: flex; flex-direction: column;
         }
 
-        .tag-header {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #6c5ce7;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-
-        .meal-section {
-            margin-bottom: 12px;
-        }
-
-        .label {
-            font-size: 0.75rem;
-            color: #95a5a6;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .content {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d3436;
-        }
-
-        .recipe-box {
-            background: #f9f9f9;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: #636e72;
-            margin-top: auto; /* Schiebt die Box nach unten, falls Karten ungleich hoch sind */
-        }
+        .tag-header { font-size: 1.4rem; font-weight: bold; color: #6c5ce7; margin-bottom: 15px; text-transform: uppercase; }
+        .label { font-size: 0.75rem; color: #95a5a6; font-weight: bold; display: block; margin-top: 10px; }
+        .content { font-size: 1.1rem; font-weight: 600; color: #2d3436; }
+        .recipe-box { background: #f9f9f9; padding: 12px; border-radius: 10px; font-size: 0.9rem; margin-top: 15px; color: #636e72; }
     </style>
 </head>
 <body>
 
-    <h1>🍴 Unser Wochenspeiseplan</h1>
+    <div class="header-nav">
+        <h1>🍴 Wochenspeiseplan</h1>
+        <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
+    </div>
 
     <div class="container">
         <div class="card">
             <div class="tag-header">Montag</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Crunchy Feta & Pommes</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Protein Schokobrötchen</div>
-            </div>
-            <div class="recipe-box">
-                Feta panieren, im Airfryer 12 Min. bei 200°C backen. Pommes dazu.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Crunchy Feta & Pommes</div>
+            <span class="label">NACHSPEISE</span><div class="content">Protein Schokobrötchen</div>
+            <div class="recipe-box">Feta panieren, Airfryer 12 Min. bei 200°C.</div>
         </div>
 
         <div class="card">
             <div class="tag-header">Dienstag</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Protein Spätzle-Pfanne</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Skyr mit Beeren</div>
-            </div>
-            <div class="recipe-box">
-                Hackfleisch anbraten, Spätzle mitbraten. Tomaten dazu, würzen, Käse schmelzen.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Protein Spätzle-Pfanne</div>
+            <span class="label">NACHSPEISE</span><div class="content">Skyr mit Beeren</div>
+            <div class="recipe-box">Hack braten, Spätzle dazu, Käse schmelzen.</div>
         </div>
 
         <div class="card">
             <div class="tag-header">Mittwoch</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Cremige Garnelen-Pasta</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Quark-Auflauf</div>
-            </div>
-            <div class="recipe-box">
-                Spaghetti kochen. Garnelen braten, Sahne & Frischkäse dazu. Pasta unterheben.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Cremige Garnelen-Pasta</div>
+            <span class="label">NACHSPEISE</span><div class="content">Quark-Auflauf</div>
+            <div class="recipe-box">Garnelen braten, Frischkäse-Sauce zu Pasta.</div>
         </div>
 
         <div class="card">
             <div class="tag-header">Donnerstag</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Chicken Fajita Bowl</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Schoko-Quark-Pudding</div>
-            </div>
-            <div class="recipe-box">
-                Hähnchen & Paprika mit Fajita-Gewürz braten. Auf Reis servieren.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Chicken Fajita Bowl</div>
+            <span class="label">NACHSPEISE</span><div class="content">Schoko-Quark-Pudding</div>
+            <div class="recipe-box">Hähnchen & Paprika braten, auf Reis servieren.</div>
         </div>
 
         <div class="card">
             <div class="tag-header">Freitag</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Protein Thunfisch-Pizza</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Apfel mit Erdnussmus</div>
-            </div>
-            <div class="recipe-box">
-                Teig aus Quark & Mehl kneten. Belegen und 12 Min. bei 220°C backen.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Protein Thunfisch-Pizza</div>
+            <span class="label">NACHSPEISE</span><div class="content">Apfel mit Erdnussmus</div>
+            <div class="recipe-box">Quark-Teig belegen, 12 Min. bei 220°C backen.</div>
         </div>
 
         <div class="card">
             <div class="tag-header">Samstag</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Garnelen-Bowl mit Kartoffel</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Mango-Lassi (Protein)</div>
-            </div>
-            <div class="recipe-box">
-                Kartoffelwürfel im Ofen backen. Garnelen braten, Mozzarella schmelzen.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Garnelen-Bowl mit Kartoffel</div>
+            <span class="label">NACHSPEISE</span><div class="content">Mango-Lassi (Protein)</div>
+            <div class="recipe-box">Kartoffelwürfel backen, Garnelen braten.</div>
         </div>
 
         <div class="card" style="border-left-color: #ff7675;">
             <div class="tag-header" style="color: #ff7675;">Sonntag</div>
-            <div class="meal-section">
-                <span class="label">HAUPTSPEISE</span>
-                <div class="content">Sonntagsessen nach Wahl</div>
-            </div>
-            <div class="meal-section">
-                <span class="label">NACHSPEISE</span>
-                <div class="content">Eis mit heißen Beeren</div>
-            </div>
-            <div class="recipe-box">
-                Gemütlich kochen oder bestellen. Dessert: TK-Beeren kurz aufkochen.
-            </div>
+            <span class="label">HAUPTSPEISE</span><div class="content">Sonntagsessen nach Wahl</div>
+            <span class="label">NACHSPEISE</span><div class="content">Eis mit heißen Beeren</div>
+            <div class="recipe-box">Gemütlich kochen oder bestellen. Beeren aufkochen.</div>
         </div>
     </div>
 
