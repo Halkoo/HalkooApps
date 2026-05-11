@@ -4,62 +4,105 @@
     <meta charset="UTF-8">
     <title>Wochenspeiseplan</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background-color: white; }
-        .einkauf-btn { 
-            display: block; width: 100%; background: #27ae60; color: white; 
-            text-align: center; padding: 15px; text-decoration: none; 
-            border-radius: 5px; font-weight: bold; margin-bottom: 20px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
         }
-        .tag { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
-        .title { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; }
-        .label { color: #666; font-size: 0.8em; }
-        .content { margin-bottom: 10px; font-size: 1.1em; }
+        .btn-einkauf {
+            display: block;
+            width: 100%;
+            background-color: #27ae60;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .tag-container {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tag-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+        }
+        .food-text {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
+    <a href="Einkaufsliste.html" class="btn-einkauf">🛒 ZUR EINKAUFSLISTE</a>
 
-    <div class="tag">
-        <div class="title">Montag</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Crunchy Feta & Pommes</div>
-        <div class="label">NACHSPEISE</div><div class="content">Protein Schokobrötchen</div>
+    <div class="tag-container">
+        <div class="tag-name">Montag</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Crunchy Feta & Pommes</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Protein Schokobrötchen</div>
     </div>
 
-    <div class="tag">
-        <div class="title">Dienstag</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Protein Spätzle-Pfanne</div>
-        <div class="label">NACHSPEISE</div><div class="content">Skyr mit Beeren</div>
+    <div class="tag-container">
+        <div class="tag-name">Dienstag</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Protein Spätzle-Pfanne</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Skyr mit Beeren</div>
     </div>
 
-    <div class="tag">
-        <div class="title">Mittwoch</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Cremige Garnelen-Pasta</div>
-        <div class="label">NACHSPEISE</div><div class="content">Quark-Auflauf</div>
+    <div class="tag-container">
+        <div class="tag-name">Mittwoch</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Cremige Garnelen-Pasta</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Quark-Auflauf</div>
     </div>
 
-    <div class="tag">
-        <div class="title">Donnerstag</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Chicken Fajita Bowl</div>
-        <div class="label">NACHSPEISE</div><div class="content">Schoko-Quark-Pudding</div>
+    <div class="tag-container">
+        <div class="tag-name">Donnerstag</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Chicken Fajita Bowl</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Schoko-Quark-Pudding</div>
     </div>
 
-    <div class="tag">
-        <div class="title">Freitag</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Protein Thunfisch-Pizza</div>
-        <div class="label">NACHSPEISE</div><div class="content">Apfel mit Erdnussmus</div>
+    <div class="tag-container">
+        <div class="tag-name">Freitag</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Protein Thunfisch-Pizza</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Apfel mit Erdnussmus</div>
     </div>
 
-    <div class="tag">
-        <div class="title">Samstag</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Garnelen-Bowl mit Kartoffel</div>
-        <div class="label">NACHSPEISE</div><div class="content">Mango-Lassi (Protein)</div>
+    <div class="tag-container">
+        <div class="tag-name">Samstag</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Garnelen-Bowl mit Kartoffel</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Mango-Lassi (Protein)</div>
     </div>
 
-    <div class="tag">
-        <div class="title">Sonntag</div>
-        <div class="label">HAUPTSPEISE</div><div class="content">Sonntagsessen nach Wahl</div>
-        <div class="label">NACHSPEISE</div><div class="content">Eis mit heißen Beeren</div>
+    <div class="tag-container">
+        <div class="tag-name">Sonntag</div>
+        <div class="info-label">HAUPTSPEISE</div>
+        <div class="food-text">Sonntagsessen nach Wahl</div>
+        <div class="info-label">NACHSPEISE</div>
+        <div class="food-text">Eis mit heißen Beeren</div>
     </div>
 
 </body>
