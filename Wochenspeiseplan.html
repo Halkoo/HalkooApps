@@ -3,130 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unser Wochenplan</title>
-    <link rel="apple-touch-icon" href="favicon.png">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Wochenplan">
-
+    <title>Wochenspeiseplan</title>
     <style>
-        :root { --primary: #6c5ce7; --secondary: #00b894; --bg: #f0f2f5; --card: #ffffff; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); padding: 10px; display: flex; flex-direction: column; align-items: center; margin: 0; }
-        
-        h2 { color: #2d3436; margin-top: 10px; }
-        
-        /* Button für Einkaufsliste */
-        .btn-open-list { background: var(--secondary); color: white; text-decoration: none; padding: 12px 25px; border-radius: 12px; margin: 15px 0; font-weight: bold; box-shadow: 0 4px 10px rgba(0,184,148,0.3); border: none; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
-        
-        /* Karten Design */
-        .day-card { background: var(--card); border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-left: 10px solid var(--primary); position: relative; }
-        .day-title { font-weight: bold; font-size: 1.4rem; color: var(--primary); margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
-        .meal-box { margin-bottom: 12px; }
-        .label { font-size: 0.75rem; color: #636e72; font-weight: 800; text-transform: uppercase; }
-        .content { font-size: 1.15rem; color: #2d3436; font-weight: 500; word-wrap: break-word; }
-        
-        .show-btn { width: 100%; background: #f0eeff; color: var(--primary); border: 2px solid var(--primary); padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .zutaten-liste { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; border: 1.5px dashed var(--primary); background: #f9f9ff; }
-        .zutaten-liste.show { display: block; }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
 
-        /* Einkaufsliste Overlay (Pop-up) */
-        #list-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 20px; overflow-y: auto; }
-        .overlay-content { background: white; width: 90%; max-width: 450px; border-radius: 25px; padding: 20px; position: relative; margin-bottom: 20px; }
-        .close-btn { background: #ff7675; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
-        
-        .item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-        .item.checked span { text-decoration: line-through; color: #b2bec3; }
-        .checkbox { width: 22px; height: 22px; border: 2px solid #dfe6e9; border-radius: 6px; margin-right: 15px; flex-shrink: 0; }
-        .item.checked .checkbox { background: var(--secondary); border-color: var(--secondary); display: flex; align-items: center; justify-content: center; }
-        .item.checked .checkbox::after { content: '✔'; color: white; font-size: 14px; }
-        
-        .loader { margin: 30px; font-weight: bold; color: var(--primary); }
+        /* GRID-LAYOUT: Das sorgt für die Spalten nebeneinander */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tag-header {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #6c5ce7;
+            border-bottom: 2px solid #f0f2f5;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        .meal-section {
+            margin-bottom: 15px;
+        }
+
+        .meal-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #95a5a6;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .meal-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .recipe-box {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #636e72;
+            flex-grow: 1;
+        }
+
+        .recipe-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
 
-    <h2>🍴 Unser Wochenplan</h2>
-    
-    <button class="btn-open-list" onclick="toggleOverlay(true)">🛒 Einkaufsliste öffnen</button>
+    <h1>🍴 Unser Wochenspeiseplan</h1>
 
-    <div id="loading" class="loader">Lade Plan...</div>
-    <div class="grid" id="plan-grid"></div>
+    <div class="container">
+        <div class="card">
+            <div class="tag-header">Montag</div>
+            <div class="meal-section">
+                <div class="meal-label">Hauptspeise</div>
+                <div class="meal-name">Crunchy Feta & Pommes</div>
+            </div>
+            <div class="meal-section">
+                <div class="meal-label">Nachspeise</div>
+                <div class="meal-name">Protein Schokobrötchen</div>
+            </div>
+            <div class="recipe-box">
+                <span class="recipe-title">Zubereitung:</span>
+                Feta panieren, im Airfryer 12 Min./200°C backen. Pommes dazu. Dessert: Quark, Mehl & Drops verkneten, 15 Min./180°C backen.
+            </div>
+        </div>
 
-    <div id="list-overlay">
-        <div class="overlay-content">
-            <h3 style="margin-top:0">🛒 Aktuelle Liste</h3>
-            <div id="shopping-list">Lade Liste...</div>
-            <button class="close-btn" onclick="toggleOverlay(false)">Schließen</button>
+        <div class="card">
+            <div class="tag-header">Dienstag</div>
+            <div class="meal-section">
+                <div class="meal-label">Hauptspeise</div>
+                <div class="meal-name">Protein Spätzle-Pfanne</div>
+            </div>
+            <div class="meal-section">
+                <div class="meal-label">Nachspeise</div>
+                <div class="meal-name">Skyr mit Beeren</div>
+            </div>
+            <div class="recipe-box">
+                <span class="recipe-title">Zubereitung:</span>
+                Hack braten, Spätzle mitbraten. Tomaten dazu, würzen, mit Käse schmelzen. Dessert: Skyr mit Beeren mixen.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tag-header">Mittwoch</div>
+            <div class="meal-section">
+                <div class="meal-label">Hauptspeise</div>
+                <div class="meal-name">Cremige Garnelen-Pasta</div>
+            </div>
+            <div class="meal-section">
+                <div class="meal-label">Nachspeise</div>
+                <div class="meal-name">Quark-Auflauf</div>
+            </div>
+            <div class="recipe-box">
+                <span class="recipe-title">Zubereitung:</span>
+                Spaghetti kochen. Garnelen braten, Sahne & Frischkäse dazu. Pasta unterheben. Dessert: Quark, Eier & Beeren 25 Min./180°C backen.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tag-header">Donnerstag</div>
+            <div class="meal-section">
+                <div class="meal-label">Hauptspeise</div>
+                <div class="meal-name">Chicken Fajita Bowl</div>
+            </div>
+            <div class="meal-section">
+                <div class="meal-label">Nachspeise</div>
+                <div class="meal-name">Schoko-Quark-Pudding</div>
+            </div>
+            <div class="recipe-box">
+                <span class="recipe-title">Zubereitung:</span>
+                Reis kochen. Hähnchen & Paprika mit Fajita-Gewürz braten. Auf Reis servieren. Dessert: Quark mit Proteinpulver cremig rühren.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tag-header">Freitag</div>
+            <div class="meal-section">
+                <div class="meal-label">Hauptspeise</div>
+                <div class="meal-name">Protein Thunfisch-Pizza</div>
+            </div>
+            <div class="meal-section">
+                <div class="meal-label">Nachspeise</div>
+                <div class="meal-name">Apfel mit Erdnussmus</div>
+            </div>
+            <div class="recipe-box">
+                <span class="recipe-title">Zubereitung:</span>
+                Teig aus Quark & Mehl kneten. Belegen und 12 Min./220°C backen. Dessert: Apfel in Spalten mit Mus dippen.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tag-header">Samstag</div>
+            <div class="meal-section">
+                <div class="meal-label">Hauptspeise</div>
+                <div class="meal-name">Garnelen-Bowl mit Kartoffel</div>
+            </div>
+            <div class="meal-section">
+                <div class="meal-label">Nachspeise</div>
+                <div class="meal-name">Mango-Lassi (Protein)</div>
+            </div>
+            <div class="recipe-box">
+                <span class="recipe-title">Zubereitung:</span>
+                Kartoffelwürfel 25 Min. backen. Garnelen braten, Mozzarella mitschmelzen. Auf Salat anrichten. Dessert: Skyr & Mango pürieren.
+            </div>
         </div>
     </div>
 
-    <script>
-        const planUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pub?gid=0&single=true&output=csv';
-        const listUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pub?gid=1056757043&single=true&output=csv';
-
-        // Pop-up öffnen/schließen
-        function toggleOverlay(show) {
-            document.getElementById('list-overlay').style.display = show ? 'flex' : 'none';
-            if(show) loadList();
-        }
-
-        async function loadPlan() {
-            try {
-                const res = await fetch(planUrl + '&t=' + Date.now());
-                const data = await res.text();
-                const rows = data.split('\n').slice(1).filter(r => r.trim() !== '');
-                const grid = document.getElementById('plan-grid');
-                grid.innerHTML = '';
-                document.getElementById('loading').style.display = 'none';
-
-                rows.forEach(row => {
-                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if(cols.length >= 3) {
-                        const card = document.createElement('div');
-                        card.className = 'day-card';
-                        card.innerHTML = `
-                            <div class="day-title">${cols[0].replace(/"/g, '')}</div>
-                            <div class="meal-box"><div class="label">Hauptspeise</div><div class="content">${cols[1].replace(/"/g, '')}</div></div>
-                            <div class="meal-box"><div class="label" style="color:#e17055">Nachspeise</div><div class="content">${cols[2].replace(/"/g, '')}</div></div>
-                            <button class="show-btn" onclick="toggleAnleitung(this)">Anleitung anzeigen ↓</button>
-                            <div class="zutaten-liste"><div class="label">👨‍🍳 Anleitung:</div><div class="content">${cols[3]?.replace(/"/g, '') || '-'}</div></div>
-                        `;
-                        grid.appendChild(card);
-                    }
-                });
-            } catch(e) { document.getElementById('loading').innerText = 'Fehler beim Laden.'; }
-        }
-
-        async function loadList() {
-            const container = document.getElementById('shopping-list');
-            container.innerHTML = 'Lade...';
-            try {
-                const res = await fetch(listUrl + '&t=' + Date.now());
-                const data = await res.text();
-                const rows = data.split(/\r?\n/);
-                container.innerHTML = '';
-                rows.forEach(row => {
-                    const text = row.trim().replace(/"/g, '');
-                    if (text && text.toLowerCase() !== 'artikel') {
-                        const div = document.createElement('div');
-                        div.className = 'item';
-                        div.innerHTML = `<div class="checkbox"></div><span>${text}</span>`;
-                        div.onclick = function() { this.classList.toggle('checked'); };
-                        container.appendChild(div);
-                    }
-                });
-            } catch(e) { container.innerHTML = 'Fehler beim Laden.'; }
-        }
-
-        function toggleAnleitung(btn) {
-            const list = btn.nextElementSibling;
-            list.classList.toggle('show');
-            btn.innerText = list.classList.contains('show') ? 'Anleitung schließen ↑' : 'Anleitung anzeigen ↓';
-        }
-
-        window.onload = loadPlan;
-    </script>
 </body>
 </html>
