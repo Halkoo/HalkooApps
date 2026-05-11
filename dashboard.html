@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halkoo Dashboard</title>
     <style>
-        /* Grundlayout */
         * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #1a1c2c; /* Dunkles Blau-Grau */
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1a1c2c;
             color: white;
             margin: 0;
             padding: 20px;
@@ -18,105 +17,80 @@
             overflow: hidden;
         }
 
-        /* LINKE SEITE (35% Breite) */
+        /* LINKS: 35% Breite */
         .side-panel {
             width: 35%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
-        #clock { 
-            font-size: 6rem; 
-            font-weight: bold; 
-            margin: 0; 
-            letter-spacing: -3px;
-            line-height: 1;
-        }
-        
-        #date { 
-            font-size: 1.8rem; 
-            opacity: 0.8; 
-            margin-bottom: 5px; 
-            text-transform: capitalize;
-        }
+        #clock { font-size: 5.5rem; font-weight: bold; margin: 0; letter-spacing: -2px; line-height: 1; }
+        #date { font-size: 1.6rem; opacity: 0.8; margin-bottom: 5px; }
 
-        /* VENTUSKY WETTER BOX */
+        /* WETTER */
         .weather-container {
             flex-grow: 1;
             background: rgba(0,0,0,0.4);
-            border-radius: 25px;
+            border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .weather-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
         }
 
         /* BUTTONS */
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .btn {
             display: block;
             width: 100%;
-            padding: 22px;
-            border-radius: 20px;
+            padding: 18px;
+            border-radius: 18px;
             text-align: center;
             text-decoration: none;
             color: white;
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             text-transform: uppercase;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            transition: transform 0.1s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
-        
-        .btn:active { transform: scale(0.97); }
 
-        .btn-plan { background-color: #6366f1; } /* Indigo Lila */
+        .btn-plan { background-color: #6366f1; }    /* Lila */
         .btn-spotify { background-color: #1DB954; } /* Spotify Grün */
+        .btn-smart { background-color: #00a1ff; }   /* Smart Life Blau */
 
-        /* RECHTE SEITE (65% Breite - KALENDER) */
+        /* RECHTS: 65% Breite (Kalender) */
         .main-panel {
             width: 65%;
             margin-left: 25px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 35px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .main-panel iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
     <div class="side-panel">
-        <div class="header">
-            <div id="clock">00:00</div>
-            <div id="date">Lädt...</div>
-        </div>
+        <div id="clock">00:00</div>
+        <div id="date">Lädt...</div>
 
         <div class="weather-container">
             <iframe src="https://www.ventusky.com/?p=47.81;13.04;5&l=radar"></iframe>
         </div>
 
         <div class="btn-group">
-            <a href="https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html" class="btn btn-plan">🍴 Wochenplan</a>
+            <a href="https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html" class="btn btn-plan">🍴 WOCHENPLAN</a>
             
-            <a href="intent://open#Intent;scheme=spotify;package=com.spotify.music;end" class="btn btn-spotify">🎧 Spotify</a>
+            <a href="intent://open#Intent;scheme=spotify;package=com.spotify.music;end" class="btn btn-spotify">🎧 SPOTIFY</a>
+            
+            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="btn btn-smart">🏠 SMART LIFE</a>
         </div>
     </div>
 
@@ -125,40 +99,23 @@
     </div>
 
     <script>
-        // 1. UHRZEIT & DATUM FUNKTION
-        function updateDisplay() {
+        function update() {
             const now = new Date();
-            
-            // Zeit
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
             document.getElementById('clock').textContent = h + ":" + m;
             
-            // Datum
-            const options = { weekday: 'long', day: '2-digit', month: 'long' };
-            document.getElementById('date').textContent = now.toLocaleDateString('de-DE', options);
+            const opt = { weekday: 'long', day: '2-digit', month: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('de-DE', opt);
         }
+        setInterval(update, 1000);
+        update();
 
-        // 2. AUTOMATISCHE AKTUALISIERUNG (Refresh)
-        // Lädt die gesamte Seite alle 15 Minuten neu (900.000 ms)
-        function setupAutoRefresh() {
-            setTimeout(function() {
-                location.reload();
-            }, 900000);
-        }
+        // Auto-Refresh alle 15 Minuten
+        setInterval(() => { location.reload(); }, 900000);
 
-        // 3. FULLY KIOSK CACHE CONTROL
-        // Löscht beim Laden den Cache, damit Google Tabellen-Daten immer frisch sind
-        window.onload = function() {
-            if (typeof fully !== 'undefined') {
-                fully.clearCache();
-            }
-        };
-
-        // Starten
-        setInterval(updateDisplay, 1000);
-        updateDisplay();
-        setupAutoRefresh();
+        // Fully Cache beim Laden leeren
+        if (typeof fully !== 'undefined') { fully.clearCache(); }
     </script>
 </body>
 </html>
