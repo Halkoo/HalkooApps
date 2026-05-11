@@ -3,110 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Home Steuerung</title>
+    <title>Geräte Steuerung</title>
     <style>
         * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             background-color: #1a1c2c;
             color: white;
             margin: 0;
-            padding: 20px;
+            padding: 30px;
             height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* HEADER MIT ZURÜCK-BUTTON */
+        /* HEADER */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .back-btn {
             padding: 15px 30px;
-            background-color: #444;
+            background-color: #3f415e;
             color: white;
             text-decoration: none;
             border-radius: 15px;
             font-weight: bold;
             font-size: 1.2rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        h1 { margin: 0; font-size: 2rem; color: #00a1ff; }
+        h1 { margin: 0; font-size: 2.2rem; color: #00a1ff; }
 
-        /* GRID FÜR DEINE GERÄTE */
+        /* GRID */
         .grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Zwei Spalten nebeneinander */
-            gap: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
             flex-grow: 1;
         }
 
         .widget {
-            background: rgba(255,255,255,0.05);
-            border-radius: 25px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            text-align: center;
         }
 
-        .widget h2 { margin-top: 0; font-size: 1.5rem; opacity: 0.9; }
+        .widget h2 { 
+            margin: 0; 
+            font-size: 1.8rem; 
+            color: #ffffff; 
+        }
 
-        /* PLATZHALTER FÜR APPS ODER IFRAMES */
+        .status-text {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            color: #bdc3c7;
+        }
+
+        .online-dot {
+            color: #2ecc71;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* BUTTONS */
         .app-link {
             width: 100%;
             padding: 20px;
-            background: #00a1ff;
             color: white;
             text-decoration: none;
-            border-radius: 15px;
+            border-radius: 20px;
             font-weight: bold;
+            font-size: 1.3rem;
             text-align: center;
-            margin-top: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
         }
+
+        .app-link:active { transform: scale(0.96); }
+
+        /* FARBEN */
+        .bg-calor { background-color: #ff5e57; }     /* Rot für Calor BT */
+        .bg-switch { background-color: #e74c3c; }    /* SwitchBot Rot */
+        .bg-smart { background-color: #00a1ff; }     /* Smart Life Blau */
+        .bg-gray { background-color: #444b6e; }      /* System Grau */
+
+        .temp-val { font-size: 3.5rem; font-weight: bold; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="back-btn">← DASHBOARD</a>
-        <h1>Haussteuerung</h1>
-        <div style="width: 100px;"></div>
+        <h1>Geräte Steuerung</h1>
+        <div style="width: 150px;"></div>
     </div>
 
     <div class="grid">
         <div class="widget">
-            <h2>🌡️ Heizung</h2>
-            <p>Hier kannst du später das Heizungs-Portal einbinden.</p>
+            <div>
+                <h2>🔐 Türschloss</h2>
+                <div class="online-dot">● Hub Online</div>
             </div>
+            <p class="status-text">SwitchBot Smart Lock</p>
+            <a href="intent://open#Intent;scheme=switchbot;package=com.theswitchbot.switchbot;end" class="app-link bg-switch">SWITCHBOT ÖFFNEN</a>
+        </div>
+
+        <div class="widget">
+            <h2>🌡️ Heizung</h2>
+            <div class="temp-val">21°C</div>
+            <p class="status-text">Calor BT Steuerung</p>
+            <a href="intent://open#Intent;scheme=calorbt;package=com.eurotronic.calorbt;end" class="app-link bg-calor">CALOR BT ÖFFNEN</a>
+        </div>
 
         <div class="widget">
             <h2>💡 Beleuchtung</h2>
-            <p>Smart Life Szenen & Lampen</p>
-            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="app-link">Smart Life App öffnen</a>
+            <p class="status-text">Smart Life Szenen & Lampen</p>
+            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="app-link bg-smart">SMART LIFE ÖFFNEN</a>
         </div>
 
         <div class="widget">
-            <h2>🔌 Steckdosen</h2>
-            <p>Küche & Wohnzimmer</p>
-        </div>
-
-        <div class="widget">
-            <h2>🛡️ Sicherheit</h2>
-            <p>Kamera-Vorschau (optional)</p>
+            <h2>⚙️ System</h2>
+            <p class="status-text">Geräte-Status & Info</p>
+            <a href="#" class="app-link bg-gray">EINSTELLUNGEN</a>
         </div>
     </div>
 
     <script>
-        // Auch hier: Cache leeren beim Laden
-        if (typeof fully !== 'undefined') { fully.clearCache(); }
+        if (typeof fully !== 'undefined') {
+            fully.clearCache();
+        }
     </script>
 </body>
 </html>
