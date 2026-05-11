@@ -6,185 +6,161 @@
     <title>Wochenspeiseplan</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 20px;
-            color: #333;
+            color: #2d3436;
         }
 
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
         }
 
-        /* GRID-LAYOUT: Das sorgt für die Spalten nebeneinander */
+        h1 { margin: 0; color: #2c3e50; font-size: 2rem; }
+
+        /* Der Einkaufsliste Button im Wochenplan */
+        .btn-liste {
+            background-color: #00b894;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,184,148,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* GRID FÜR NEBENEINANDER DARSTELLUNG */
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s;
+            border-left: 8px solid #6c5ce7; /* Lila Akzent für Montag-Samstag */
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+        .card.sonntag { border-left-color: #fd79a8; } /* Rosa Akzent für Sonntag */
 
-        .tag-header {
-            font-size: 1.4rem;
-            font-weight: bold;
+        .tag-name {
+            font-size: 1.5rem;
+            font-weight: 800;
             color: #6c5ce7;
-            border-bottom: 2px solid #f0f2f5;
             margin-bottom: 15px;
-            padding-bottom: 5px;
-        }
-
-        .meal-section {
-            margin-bottom: 15px;
-        }
-
-        .meal-label {
-            font-size: 0.8rem;
+            display: block;
             text-transform: uppercase;
-            color: #95a5a6;
-            font-weight: bold;
-            margin-bottom: 3px;
+            letter-spacing: 1px;
         }
 
-        .meal-name {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .meal-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
             color: #2d3436;
         }
 
-        .recipe-box {
-            background: #f9f9f9;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.9rem;
-            line-height: 1.4;
+        .meal-sub {
             color: #636e72;
-            flex-grow: 1;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            font-style: italic;
         }
 
-        .recipe-title {
+        .recipe-box {
+            background: #f1f2f6;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .recipe-label {
             font-weight: bold;
-            margin-bottom: 5px;
             display: block;
+            margin-bottom: 5px;
             color: #2c3e50;
         }
     </style>
 </head>
 <body>
 
-    <h1>🍴 Unser Wochenspeiseplan</h1>
+    <div class="header-area">
+        <h1>🍴 Wochenspeiseplan</h1>
+        <a href="Einkaufsliste.html" class="btn-liste">🛒 Zur Einkaufsliste</a>
+    </div>
 
     <div class="container">
         <div class="card">
-            <div class="tag-header">Montag</div>
-            <div class="meal-section">
-                <div class="meal-label">Hauptspeise</div>
-                <div class="meal-name">Crunchy Feta & Pommes</div>
-            </div>
-            <div class="meal-section">
-                <div class="meal-label">Nachspeise</div>
-                <div class="meal-name">Protein Schokobrötchen</div>
-            </div>
+            <span class="tag-name">Montag</span>
+            <div class="meal-title">Crunchy Feta & Pommes</div>
+            <div class="meal-sub">Dessert: Protein Schokobrötchen</div>
             <div class="recipe-box">
-                <span class="recipe-title">Zubereitung:</span>
-                Feta panieren, im Airfryer 12 Min./200°C backen. Pommes dazu. Dessert: Quark, Mehl & Drops verkneten, 15 Min./180°C backen.
+                <span class="recipe-label">Zubereitung:</span>
+                Feta panieren, im Airfryer 12 Min./200°C backen. Dessert: Quark, Mehl & Drops verkneten, 15 Min./180°C backen.
             </div>
         </div>
 
         <div class="card">
-            <div class="tag-header">Dienstag</div>
-            <div class="meal-section">
-                <div class="meal-label">Hauptspeise</div>
-                <div class="meal-name">Protein Spätzle-Pfanne</div>
-            </div>
-            <div class="meal-section">
-                <div class="meal-label">Nachspeise</div>
-                <div class="meal-name">Skyr mit Beeren</div>
-            </div>
+            <span class="tag-name">Dienstag</span>
+            <div class="meal-title">Protein Spätzle-Pfanne</div>
+            <div class="meal-sub">Dessert: Skyr mit Beeren</div>
             <div class="recipe-box">
-                <span class="recipe-title">Zubereitung:</span>
-                Hack braten, Spätzle mitbraten. Tomaten dazu, würzen, mit Käse schmelzen. Dessert: Skyr mit Beeren mixen.
+                <span class="recipe-label">Zubereitung:</span>
+                Hack braten, Spätzle & Tomaten dazu. Mit Käse schmelzen. Dessert: Skyr mit Beeren mixen.
             </div>
         </div>
 
         <div class="card">
-            <div class="tag-header">Mittwoch</div>
-            <div class="meal-section">
-                <div class="meal-label">Hauptspeise</div>
-                <div class="meal-name">Cremige Garnelen-Pasta</div>
-            </div>
-            <div class="meal-section">
-                <div class="meal-label">Nachspeise</div>
-                <div class="meal-name">Quark-Auflauf</div>
-            </div>
+            <span class="tag-name">Mittwoch</span>
+            <div class="meal-title">Cremige Garnelen-Pasta</div>
+            <div class="meal-sub">Dessert: Quark-Auflauf</div>
             <div class="recipe-box">
-                <span class="recipe-title">Zubereitung:</span>
-                Spaghetti kochen. Garnelen braten, Sahne & Frischkäse dazu. Pasta unterheben. Dessert: Quark, Eier & Beeren 25 Min./180°C backen.
+                <span class="recipe-label">Zubereitung:</span>
+                Spaghetti mit Garnelen, Sahne & Frischkäse. Dessert: Quark, Eier & Beeren 25 Min./180°C backen.
             </div>
         </div>
 
         <div class="card">
-            <div class="tag-header">Donnerstag</div>
-            <div class="meal-section">
-                <div class="meal-label">Hauptspeise</div>
-                <div class="meal-name">Chicken Fajita Bowl</div>
-            </div>
-            <div class="meal-section">
-                <div class="meal-label">Nachspeise</div>
-                <div class="meal-name">Schoko-Quark-Pudding</div>
-            </div>
+            <span class="tag-name">Donnerstag</span>
+            <div class="meal-title">Chicken Fajita Bowl</div>
+            <div class="meal-sub">Dessert: Schoko-Quark-Pudding</div>
             <div class="recipe-box">
-                <span class="recipe-title">Zubereitung:</span>
-                Reis kochen. Hähnchen & Paprika mit Fajita-Gewürz braten. Auf Reis servieren. Dessert: Quark mit Proteinpulver cremig rühren.
+                <span class="recipe-label">Zubereitung:</span>
+                Reis, Hähnchen & Paprika mit Fajita-Gewürz. Dessert: Quark mit Proteinpulver cremig rühren.
             </div>
         </div>
 
         <div class="card">
-            <div class="tag-header">Freitag</div>
-            <div class="meal-section">
-                <div class="meal-label">Hauptspeise</div>
-                <div class="meal-name">Protein Thunfisch-Pizza</div>
-            </div>
-            <div class="meal-section">
-                <div class="meal-label">Nachspeise</div>
-                <div class="meal-name">Apfel mit Erdnussmus</div>
-            </div>
+            <span class="tag-name">Freitag</span>
+            <div class="meal-title">Protein Thunfisch-Pizza</div>
+            <div class="meal-sub">Dessert: Apfel mit Erdnussmus</div>
             <div class="recipe-box">
-                <span class="recipe-title">Zubereitung:</span>
-                Teig aus Quark & Mehl kneten. Belegen und 12 Min./220°C backen. Dessert: Apfel in Spalten mit Mus dippen.
+                <span class="recipe-label">Zubereitung:</span>
+                Teig aus Quark & Mehl. Belegen und 12 Min./220°C backen. Dessert: Apfelspalten mit Mus.
             </div>
         </div>
 
         <div class="card">
-            <div class="tag-header">Samstag</div>
-            <div class="meal-section">
-                <div class="meal-label">Hauptspeise</div>
-                <div class="meal-name">Garnelen-Bowl mit Kartoffel</div>
-            </div>
-            <div class="meal-section">
-                <div class="meal-label">Nachspeise</div>
-                <div class="meal-name">Mango-Lassi (Protein)</div>
-            </div>
+            <span class="tag-name">Samstag</span>
+            <div class="meal-title">Garnelen-Bowl mit Kartoffel</div>
+            <div class="meal-sub">Dessert: Mango-Lassi (Protein)</div>
             <div class="recipe-box">
-                <span class="recipe-title">Zubereitung:</span>
-                Kartoffelwürfel 25 Min. backen. Garnelen braten, Mozzarella mitschmelzen. Auf Salat anrichten. Dessert: Skyr & Mango pürieren.
+                <span class="recipe-label">Zubereitung:</span>
+                Kartoffelwürfel backen. Garnelen & Mozzarella dazu. Dessert: Skyr & Mango pürieren.
             </div>
         </div>
     </div>
