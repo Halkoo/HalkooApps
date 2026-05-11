@@ -3,93 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Küchen-Zentrale</title>
+    <title>Unser Wochenplan</title>
     <style>
-        :root { --primary: #6366f1; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
-        h1 { text-align: center; font-size: 1.8rem; margin-bottom: 25px; }
-        
-        /* WOCHENPLAN GRID */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 6px solid var(--primary); }
-        .day { font-size: 1.4rem; font-weight: bold; color: var(--primary); margin-bottom: 8px; }
-        .meal-box { margin-top: 10px; }
-        .label { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: bold; }
-        .meal { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
 
-        /* BUTTONS & OVERLAY */
-        .fab { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; box-shadow: 0 10px 20px rgba(99,102,241,0.3); cursor: pointer; z-index: 100; }
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.9); z-index: 1000; }
-        .box { background: white; width: 90%; max-width: 450px; height: 80%; margin: 5% auto; border-radius: 25px; padding: 25px; display: flex; flex-direction: column; position: relative; }
-        .close { position: absolute; top: 15px; right: 15px; background: #fee2e2; color: #ef4444; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; }
-        #list-content { overflow-y: auto; flex-grow: 1; margin-top: 20px; }
-        .item { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 1.1rem; display: flex; align-items: center; }
-        .item input { margin-right: 15px; width: 20px; height: 20px; }
+        .header-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Der grüne Haupt-Button */
+        .main-btn {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto 30px auto;
+            background-color: #7eb09b; /* Das exakte Grün aus dem Screenshot */
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Wochenplan Karten Grid */
+        .plan-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Karte im Design des Screenshots */
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            border-left: 10px solid #6366f1; /* Der lila Balken links */
+        }
+
+        .day-name {
+            font-size: 1.8rem;
+            color: #6366f1;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+        }
+
+        .label-haupt { color: #64748b; }
+        .label-nach { color: #f97316; } /* Orange für Nachspeise */
+
+        .meal-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 5px;
+            color: #1e293b;
+        }
+
+        /* Der Anleitung anzeigen Button */
+        .info-btn {
+            width: 100%;
+            background: white;
+            border: 2px solid #6366f1;
+            color: #6366f1;
+            padding: 12px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .details-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 15px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Overlay für Einkaufsliste */
+        #list-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+        }
+        .overlay-card {
+            background: white; width: 90%; max-width: 450px; height: 80%;
+            margin: 5% auto; border-radius: 30px; padding: 25px;
+            display: flex; flex-direction: column;
+        }
+        .close-overlay {
+            align-self: flex-end;
+            background: #fee2e2; color: #ef4444; border: none;
+            width: 40px; height: 40px; border-radius: 50%; font-weight: bold;
+        }
+        .shopping-items { overflow-y: auto; flex-grow: 1; margin-top: 20px; }
+        .check-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 1.1rem; }
+        .check-item input { margin-right: 15px; width: 22px; height: 22px; }
     </style>
 </head>
 <body>
 
-    <h1>🍴 Wochenspeiseplan</h1>
-    <div id="plan-grid" class="grid">Lade Plan...</div>
+    <div class="header-title">
+        🍴 Unser Wochenplan
+    </div>
 
-    <button class="fab" onclick="toggleList(true)">🛒 Einkaufsliste</button>
+    <button class="main-btn" onclick="toggleOverlay(true)">
+        🛒 Zur Einkaufsliste
+    </button>
 
-    <div id="overlay">
-        <div class="box">
-            <button class="close" onclick="toggleList(false)">✕</button>
-            <h2>🛒 Einkaufsliste</h2>
-            <div id="list-content">Wird geladen...</div>
+    <div id="plan-grid" class="plan-container">
+        </div>
+
+    <div id="list-overlay">
+        <div class="overlay-card">
+            <button class="close-overlay" onclick="toggleOverlay(false)">✕</button>
+            <h2 style="text-align:center">🛒 Einkaufsliste</h2>
+            <div id="shopping-list" class="shopping-items"></div>
         </div>
     </div>
 
     <script>
-        // Deine funktionierenden Links
         const planURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pub?gid=0&single=true&output=csv";
         const listURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pub?gid=1056757043&single=true&output=csv";
 
-        async function fetchCSV(url) {
-            const response = await fetch(url + "&cb=" + Date.now()); // cb verhindert altes Laden
-            const text = await response.text();
-            return text.split('\n').map(row => row.split(','));
-        }
-
-        async function loadPlan() {
+        async function loadData() {
             try {
-                const rows = await fetchCSV(planURL);
+                const res = await fetch(planURL + "&cb=" + Date.now());
+                const text = await res.text();
+                const rows = text.split('\n').slice(1);
                 const grid = document.getElementById('plan-grid');
                 grid.innerHTML = '';
-                
-                rows.slice(1).forEach(cols => {
+
+                rows.forEach((row, i) => {
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if(cols[0]) {
                         grid.innerHTML += `
                             <div class="card">
-                                <div class="day">${cols[0]}</div>
-                                <div class="meal-box">
-                                    <div class="label">Hauptspeise</div>
-                                    <div class="meal">${cols[1] || '-'}</div>
-                                    <div class="label">Nachspeise</div>
-                                    <div class="meal">${cols[2] || '-'}</div>
-                                </div>
-                            </div>`;
+                                <div class="day-name">${cols[0].replace(/"/g, '')}</div>
+                                
+                                <div class="label label-haupt">HAUPTSPEISE</div>
+                                <div class="meal-text">${(cols[1] || '-').replace(/"/g, '')}</div>
+                                
+                                <div class="label label-nach">NACHSPEISE</div>
+                                <div class="meal-text">${(cols[2] || '-').replace(/"/g, '')}</div>
+                                
+                                <button class="info-btn" onclick="showInfo(${i})">Anleitung anzeigen →</button>
+                                <div id="info-${i}" class="details-box">${(cols[3] || 'Keine Anleitung.').replace(/"/g, '')}</div>
+                            </div>
+                        `;
                     }
                 });
-            } catch (e) { document.getElementById('plan-grid').innerHTML = "Fehler beim Laden des Plans."; }
+            } catch (e) { console.error(e); }
         }
 
-        async function toggleList(show) {
-            const over = document.getElementById('overlay');
+        function showInfo(id) {
+            const box = document.getElementById(`info-${id}`);
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function toggleOverlay(show) {
+            const over = document.getElementById('list-overlay');
             over.style.display = show ? 'block' : 'none';
             if(show) {
-                const cont = document.getElementById('list-content');
-                cont.innerHTML = 'Lade...';
-                try {
-                    const rows = await fetchCSV(listURL);
-                    cont.innerHTML = rows.slice(1).map(row => row[0].trim() ? `<div class="item"><input type="checkbox"> ${row[0]}</div>` : '').join('');
-                } catch (e) { cont.innerHTML = "Fehler beim Laden der Liste."; }
+                const cont = document.getElementById('shopping-list');
+                cont.innerHTML = 'Lädt...';
+                const res = await fetch(listURL + "&cb=" + Date.now());
+                const text = await res.text();
+                const items = text.split('\n').slice(1);
+                cont.innerHTML = items.map(i => i.trim() ? `<div class="check-item"><input type="checkbox"> ${i.replace(/"/g, '')}</div>` : '').join('');
             }
         }
 
-        loadPlan();
+        loadData();
     </script>
 </body>
 </html>
