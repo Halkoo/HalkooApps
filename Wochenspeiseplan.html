@@ -6,7 +6,7 @@
     <title>Wochenspeiseplan</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             margin: 0;
             padding: 20px;
@@ -15,164 +15,143 @@
             align-items: center;
         }
 
-        h1 {
-            color: #333;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .einkauf-btn {
             background-color: #63b39d;
             color: white;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
-            padding: 15px;
+            padding: 18px;
             border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .card {
             background: white;
             width: 100%;
-            max-width: 500px;
-            border-radius: 25px;
-            padding: 20px;
+            max-width: 600px;
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             position: relative;
-            overflow: hidden;
+            border-left: 15px solid #6c5ce7; /* Der markante lila Balken vom Foto */
             box-sizing: border-box;
         }
 
-        /* Der lila Balken links im Bild */
-        .card::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 12px;
-            background-color: #6c5ce7;
-        }
-
-        .tag-name {
-            font-size: 1.6rem;
+        .tag-header {
+            font-size: 1.8rem;
             font-weight: bold;
             color: #6c5ce7;
             margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 2px solid #f0f2f5;
             padding-bottom: 10px;
         }
 
         .label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            color: #a0a0a0;
             font-weight: bold;
-            color: #888;
-            margin-top: 10px;
-            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
         }
 
-        .meal-text {
-            font-size: 1.2rem;
+        .content {
+            font-size: 1.3rem;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
+            color: #2d3436;
+            margin-top: 5px;
         }
 
-        .recipe-btn {
+        .recipe-link {
             display: block;
-            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            text-align: center;
             background-color: white;
             border: 2px solid #6c5ce7;
             color: #6c5ce7;
-            padding: 10px;
             border-radius: 12px;
-            margin-top: 20px;
-            text-align: center;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .recipe-link:active {
+            background-color: #6c5ce7;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-    <h1>🍴 Unser Wochenplan</h1>
-
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 Zur Einkaufsliste</a>
+    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
 
     <div class="card">
-        <div class="tag-name">Montag</div>
+        <div class="tag-header">Montag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Hähnchen-Linsen Pfanne</div>
+        <div class="content">Hähnchen-Linsen Pfanne</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Topfen mit Himbeeren & Leinsamen</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Topfen mit Himbeeren & Leinsamen</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
     <div class="card">
-        <div class="tag-name">Dienstag</div>
+        <div class="tag-header">Dienstag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Puten Pasta</div>
+        <div class="content">Puten Pasta</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Topfen mit Blaubeeren</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Topfen mit Blaubeeren</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
     <div class="card">
-        <div class="tag-name">Mittwoch</div>
+        <div class="tag-header">Mittwoch</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Cremige Garnelen-Pasta</div>
+        <div class="content">Cremige Garnelen-Pasta</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Quark-Auflauf</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Quark-Auflauf</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
     <div class="card">
-        <div class="tag-name">Donnerstag</div>
+        <div class="tag-header">Donnerstag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Chicken Fajita Bowl</div>
+        <div class="content">Chicken Fajita Bowl</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Schoko-Quark-Pudding</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Schoko-Quark-Pudding</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
     <div class="card">
-        <div class="tag-name">Freitag</div>
+        <div class="tag-header">Freitag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Protein Thunfisch-Pizza</div>
+        <div class="content">Protein Thunfisch-Pizza</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Apfel mit Erdnussmus</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Apfel mit Erdnussmus</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
     <div class="card">
-        <div class="tag-name">Samstag</div>
+        <div class="tag-header">Samstag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Garnelen-Bowl mit Kartoffel</div>
+        <div class="content">Garnelen-Bowl mit Kartoffel</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Mango-Lassi (Protein)</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Mango-Lassi (Protein)</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
     <div class="card">
-        <div class="tag-name">Sonntag</div>
+        <div class="tag-header">Sonntag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal-text">Sonntagsessen nach Wahl</div>
+        <div class="content">Sonntagsessen nach Wahl</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal-text">Eis mit heißen Beeren</div>
-        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+        <div class="content">Eis mit heißen Beeren</div>
+        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
     </div>
 
 </body>
