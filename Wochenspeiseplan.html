@@ -1,115 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wochenspeiseplan</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .einkauf-btn {
-            display: block;
-            width: 100%;
-            background-color: #27ae60;
+            background-color: #63b39d;
             color: white;
+            width: 100%;
+            max-width: 500px;
             text-align: center;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 25px;
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
-        .tag-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* Der lila Balken links im Bild */
+        .card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 12px;
+            background-color: #6c5ce7;
         }
 
-        .tag-title {
-            font-size: 1.2rem;
+        .tag-name {
+            font-size: 1.6rem;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            color: #6c5ce7;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
 
         .label {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.75rem;
             font-weight: bold;
+            color: #888;
+            margin-top: 10px;
+            text-transform: uppercase;
         }
 
-        .meal {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: #000;
+        .meal-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .recipe-btn {
+            display: block;
+            width: 100%;
+            background-color: white;
+            border: 2px solid #6c5ce7;
+            color: #6c5ce7;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
+    <h1>🍴 Unser Wochenplan</h1>
 
-    <div class="tag-card">
-        <div class="tag-title">Montag</div>
+    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 Zur Einkaufsliste</a>
+
+    <div class="card">
+        <div class="tag-name">Montag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Crunchy Feta & Pommes</div>
+        <div class="meal-text">Hähnchen-Linsen Pfanne</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Protein Schokobrötchen</div>
+        <div class="meal-text">Topfen mit Himbeeren & Leinsamen</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
-    <div class="tag-card">
-        <div class="tag-title">Dienstag</div>
+    <div class="card">
+        <div class="tag-name">Dienstag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Protein Spätzle-Pfanne</div>
+        <div class="meal-text">Puten Pasta</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Skyr mit Beeren</div>
+        <div class="meal-text">Topfen mit Blaubeeren</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
-    <div class="tag-card">
-        <div class="tag-title">Mittwoch</div>
+    <div class="card">
+        <div class="tag-name">Mittwoch</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Cremige Garnelen-Pasta</div>
+        <div class="meal-text">Cremige Garnelen-Pasta</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Quark-Auflauf</div>
+        <div class="meal-text">Quark-Auflauf</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
-    <div class="tag-card">
-        <div class="tag-title">Donnerstag</div>
+    <div class="card">
+        <div class="tag-name">Donnerstag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Chicken Fajita Bowl</div>
+        <div class="meal-text">Chicken Fajita Bowl</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Schoko-Quark-Pudding</div>
+        <div class="meal-text">Schoko-Quark-Pudding</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
-    <div class="tag-card">
-        <div class="tag-title">Freitag</div>
+    <div class="card">
+        <div class="tag-name">Freitag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Protein Thunfisch-Pizza</div>
+        <div class="meal-text">Protein Thunfisch-Pizza</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Apfel mit Erdnussmus</div>
+        <div class="meal-text">Apfel mit Erdnussmus</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
-    <div class="tag-card">
-        <div class="tag-title">Samstag</div>
+    <div class="card">
+        <div class="tag-name">Samstag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Garnelen-Bowl mit Kartoffel</div>
+        <div class="meal-text">Garnelen-Bowl mit Kartoffel</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Mango-Lassi (Protein)</div>
+        <div class="meal-text">Mango-Lassi (Protein)</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
-    <div class="tag-card">
-        <div class="tag-title">Sonntag</div>
+    <div class="card">
+        <div class="tag-name">Sonntag</div>
         <div class="label">HAUPTSPEISE</div>
-        <div class="meal">Sonntagsessen nach Wahl</div>
+        <div class="meal-text">Sonntagsessen nach Wahl</div>
         <div class="label">NACHSPEISE</div>
-        <div class="meal">Eis mit heißen Beeren</div>
+        <div class="meal-text">Eis mit heißen Beeren</div>
+        <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
     </div>
 
 </body>
