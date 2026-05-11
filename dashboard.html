@@ -2,106 +2,174 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Home Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halkoo Dashboard</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --spotify-green: #1DB954;
+            --bg-color: #1a1c2c;
+            --accent-lila: #6366f1;
+            --accent-green: #1db954;
+            --text-color: #ffffff;
+            --panel-bg: rgba(255, 255, 255, 0.05);
         }
 
         body {
-            margin: 0; padding: 25px; height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            font-family: 'Segoe UI', sans-serif; color: white;
-            display: grid;
-            grid-template-columns: 1fr 1.6fr;
-            grid-template-rows: auto auto 1fr; /* Wetter kleiner durch auto */
-            gap: 25px; overflow: hidden;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 25px;
+            display: flex;
+            height: 100vh;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
-        /* UHRZEIT & DATUM */
-        .time-box { grid-column: 1; display: flex; flex-direction: column; }
-        .clock { font-size: 6rem; font-weight: bold; line-height: 1; margin: 0; }
-        .date { font-size: 1.8rem; font-weight: bold; margin-top: 5px; color: #fff; }
+        /* LINKE SEITE */
+        .left-panel {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            padding-right: 10px;
+        }
 
-        /* BUTTON BEREICH (Wochenplan oben, Spotify darunter) */
+        .clock-container {
+            margin-bottom: 10px;
+        }
+
+        #clock {
+            font-size: 6rem;
+            font-weight: bold;
+            line-height: 1;
+            margin: 0;
+            letter-spacing: -2px;
+        }
+
+        #date {
+            font-size: 1.8rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            text-transform: capitalize;
+        }
+
+        /* WETTER WIDGET - Groß bis zum ersten Button */
+        .weather-widget {
+            flex-grow: 1;
+            background: var(--panel-bg);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 20px 0;
+        }
+
+        .weather-widget iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* BUTTONS AREA */
         .button-area {
-            grid-column: 1; grid-row: 2;
-            display: flex; flex-direction: column; gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .btn {
-            border: none; color: white; padding: 20px; border-radius: 20px;
-            font-weight: bold; font-size: 1.2rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            padding: 25px;
+            border-radius: 20px;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .wochenplan-btn { background: #6c5ce7; }
-        .spotify-btn { background: var(--spotify-green); }
+        .btn-plan { background-color: var(--accent-lila); }
+        .btn-spotify { background-color: var(--accent-green); }
 
-        /* WETTER (Kleiner) */
-        .weather-box {
-            grid-column: 1; grid-row: 3;
-            background: var(--glass); border-radius: 25px; border: 1px solid var(--glass-border);
-            overflow: hidden; position: relative; height: 250px; /* Hier kleiner gestellt */
-        }
-        .weather-box iframe {
-            position: absolute; width: 180%; height: 180%; top: -40%; left: -40%; border: none;
+        /* RECHTE SEITE (KALENDER) */
+        .right-panel {
+            width: 60%;
+            background: var(--panel-bg);
+            border-radius: 35px;
+            margin-left: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
         }
 
-        /* KALENDER */
-        .calendar-box {
-            grid-column: 2; grid-row: 1 / span 3;
-            background: rgba(255,255,255,0.95); border-radius: 30px; 
-            padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        .right-panel iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
-        .calendar-box iframe { width: 100%; height: 100%; border: none; border-radius: 20px; }
-
-        /* OVERLAY */
-        #plan-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
-        }
-        .overlay-content { width: 95%; height: 90%; background: #f0f2f5; border-radius: 30px; overflow: hidden; position: relative; }
-        .close-btn { position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: #ff7675; color: white; border: none; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="time-box">
-        <div id="clock" class="clock">--:--</div>
-        <div id="date" class="date">Wird geladen...</div>
-    </div>
+    <div class="left-panel">
+        <div class="clock-container">
+            <div id="clock">00:00</div>
+            <div id="date">Lädt...</div>
+        </div>
 
-    <div class="button-area">
-        <button class="btn wochenplan-btn" onclick="togglePlan(true)">🍴 WOCHENPLAN</button>
-        <button class="btn spotify-btn" onclick="window.location.href='spotify:open'">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" width="25" height="25"> 
-    SPOTIFY
-</button>
-    </div>
+        <div class="weather-widget">
+            <iframe src="https://www.windy.com/de/-Wetterradar-radar?radar,47.811,13.033,7"></iframe>
+        </div>
 
-    <div class="weather-box">
-        <iframe src="https://www.ventusky.com/?p=47.7;13.3;5&l=radar"></iframe>
-    </div>
+        <div class="button-area">
+            <a href="https://halkoo.github.io/Einkaufsliste/index.html" class="btn btn-plan">
+                🍴 WOCHENPLAN
+            </a>
 
-    <div class="calendar-box">
-        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&src=DEINE_DIENST_ID@group.calendar.google.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=1&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
-    </div>
-
-    <div id="plan-overlay">
-        <div class="overlay-content">
-            <button class="close-btn" onclick="togglePlan(false)">Schließen X</button>
-            <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
+            <a href="spotify:track:0" class="btn btn-spotify">
+                🎧 SPOTIFY
+            </a>
         </div>
     </div>
 
+    <div class="right-panel">
+        <iframe src="https://calendar.google.com/calendar/embed?src=DEINE_EMAIL_HIER&ctz=Europe%2FBerlin&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+    </div>
+
     <script>
-        function updateTime() {
+        // 1. UHRZEIT AKTUALISIEREN
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}`;
+
+            const options = { weekday: 'long', day: '2-digit', month: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('de-DE', options);
+        }
+
+        // 2. FULLY KIOSK OPTIMIERUNG
+        function fullySettings() {
+            // Alle 30 Minuten die Seite komplett frisch laden (Refresh)
+            setInterval(() => {
+                location.reload();
+            }, 1800000);
+
+            // Wenn Fully läuft, Cache beim Start leeren
+            if (typeof fully !== "undefined") {
+                fully.clearCache();
+            }
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+        fullySettings();
+    </script>
+</body>
+</html>
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
