@@ -6,7 +6,7 @@
     <title>Wochenspeiseplan</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #f0f2f5;
             margin: 0;
             padding: 20px;
@@ -15,144 +15,133 @@
             align-items: center;
         }
 
+        h1 { color: #333; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
         .einkauf-btn {
             background-color: #63b39d;
             color: white;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             text-align: center;
-            padding: 18px;
+            padding: 15px;
             border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #plan-container {
+            width: 100%;
+            max-width: 500px;
         }
 
         .card {
             background: white;
-            width: 100%;
-            max-width: 600px;
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 25px;
+            padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             position: relative;
-            border-left: 15px solid #6c5ce7; /* Der markante lila Balken vom Foto */
+            overflow: hidden;
+            border-left: 15px solid #6c5ce7; /* Der lila Balken von deinem Foto */
             box-sizing: border-box;
         }
 
-        .tag-header {
-            font-size: 1.8rem;
+        .tag-name {
+            font-size: 1.6rem;
             font-weight: bold;
             color: #6c5ce7;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #f0f2f5;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #f0f2f5;
             padding-bottom: 10px;
         }
 
         .label {
-            font-size: 0.8rem;
-            color: #a0a0a0;
+            font-size: 0.75rem;
             font-weight: bold;
-            letter-spacing: 1px;
+            color: #e67e22; /* Orange Beschriftung */
             margin-top: 15px;
+            text-transform: uppercase;
         }
 
-        .content {
-            font-size: 1.3rem;
+        .meal-text {
+            font-size: 1.25rem;
             font-weight: 600;
             color: #2d3436;
             margin-top: 5px;
         }
 
-        .recipe-link {
+        .recipe-btn {
             display: block;
-            margin-top: 25px;
-            padding: 12px;
-            text-align: center;
+            width: 100%;
             background-color: white;
             border: 2px solid #6c5ce7;
             color: #6c5ce7;
+            padding: 12px;
             border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
             text-decoration: none;
             font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .recipe-link:active {
-            background-color: #6c5ce7;
-            color: white;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
+    <h1>🍴 Unser Wochenplan</h1>
 
-    <div class="card">
-        <div class="tag-header">Montag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Hähnchen-Linsen Pfanne</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Topfen mit Himbeeren & Leinsamen</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
+    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 Zur Einkaufsliste</a>
+
+    <div id="plan-container">
+        <p style="text-align:center; color:#888;">Lade Speiseplan aus Google Tabelle...</p>
     </div>
 
-    <div class="card">
-        <div class="tag-header">Dienstag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Puten Pasta</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Topfen mit Blaubeeren</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
-    </div>
+    <script>
+        // HIER DEINE GOOGLE TABELLEN ID EINTRAGEN
+        const sheetId = '1vVp1w07pE9kX57M-L8vXoU5O5XU-m1I8hXN9XF5XWk8'; // Beispiel ID, bitte durch deine ersetzen!
+        const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-    <div class="card">
-        <div class="tag-header">Mittwoch</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Cremige Garnelen-Pasta</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Quark-Auflauf</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
-    </div>
+        fetch(base)
+            .then(res => res.text())
+            .then(data => {
+                // JSON Daten aus der Google Antwort extrahieren
+                const json = JSON.parse(data.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+                const container = document.getElementById('plan-container');
+                container.innerHTML = ''; 
 
-    <div class="card">
-        <div class="tag-header">Donnerstag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Chicken Fajita Bowl</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Schoko-Quark-Pudding</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
-    </div>
+                rows.forEach(row => {
+                    const tag = row.c[0] ? row.c[0].v : '';
+                    const hauptspeise = row.c[1] ? row.c[1].v : '';
+                    const nachspeise = row.c[2] ? row.c[2].v : '';
 
-    <div class="card">
-        <div class="tag-header">Freitag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Protein Thunfisch-Pizza</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Apfel mit Erdnussmus</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
-    </div>
-
-    <div class="card">
-        <div class="tag-header">Samstag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Garnelen-Bowl mit Kartoffel</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Mango-Lassi (Protein)</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
-    </div>
-
-    <div class="card">
-        <div class="tag-header">Sonntag</div>
-        <div class="label">HAUPTSPEISE</div>
-        <div class="content">Sonntagsessen nach Wahl</div>
-        <div class="label">NACHSPEISE</div>
-        <div class="content">Eis mit heißen Beeren</div>
-        <a href="#" class="recipe-link">ANLEITUNG ANZEIGEN</a>
-    </div>
-
+                    if(tag) {
+                        const cardHtml = `
+                            <div class="card">
+                                <div class="tag-name">${tag}</div>
+                                <div class="label">HAUPTSPEISE</div>
+                                <div class="meal-text">${hauptspeise}</div>
+                                <div class="label">NACHSPEISE</div>
+                                <div class="meal-text">${nachspeise}</div>
+                                <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+                            </div>
+                        `;
+                        container.innerHTML += cardHtml;
+                    }
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('plan-container').innerHTML = 
+                    "<p style='color:red; text-align:center;'>Fehler beim Laden! Bitte prüfe die Tabellen-ID und ob die Tabelle für 'Jeden mit Link' freigegeben ist.</p>";
+            });
+    </script>
 </body>
 </html>
