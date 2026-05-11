@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halkoo Dashboard</title>
     <style>
+        /* Grundlayout */
         * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #1a1c2c; /* Dunkles Blau-Grau */
             color: white;
             margin: 0;
@@ -17,7 +18,7 @@
             overflow: hidden;
         }
 
-        /* LINKS: 35% Breite */
+        /* LINKE SEITE (35% Breite) */
         .side-panel {
             width: 35%;
             display: flex;
@@ -25,37 +26,25 @@
             gap: 15px;
         }
 
-        #clock { font-size: 5.5rem; font-weight: bold; margin: 0; letter-spacing: -2px; }
-        #date { font-size: 1.8rem; opacity: 0.8; margin-bottom: 5px; }
+        #clock { 
+            font-size: 6rem; 
+            font-weight: bold; 
+            margin: 0; 
+            letter-spacing: -3px;
+            line-height: 1;
+        }
+        
+        #date { 
+            font-size: 1.8rem; 
+            opacity: 0.8; 
+            margin-bottom: 5px; 
+            text-transform: capitalize;
+        }
 
-        /* VENTUSKY WETTER */
+        /* VENTUSKY WETTER BOX */
         .weather-container {
             flex-grow: 1;
             background: rgba(0,0,0,0.4);
-            border-radius: 20px;
+            border-radius: 25px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 22px;
-            border-radius: 20px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: transform 0.1s;
-        }
-        .btn:active { transform: scale(0.98); }
-
-        .btn-plan { background-color: #6366f1; } /* Lila */
-        .btn-spotify { background-color: #1DB954; } /* Spotify Grün */
-
-        /* RECHTS: 65% Breite */
-        .main-panel {
-            width: 65%;
-            margin
+            border: 1px solid rgba(25
