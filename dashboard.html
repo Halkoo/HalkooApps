@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0f172a">
@@ -20,23 +21,17 @@
             font-family: 'Segoe UI', sans-serif; color: white;
             display: grid;
             grid-template-columns: 1fr 1.4fr;
-            grid-template-rows: auto 0.8fr 250px; /* Wetter-Reihe etwas kleiner, Button-Reihe höher */
+            grid-template-rows: auto 1fr 200px;
             gap: 20px; overflow: hidden;
             box-sizing: border-box;
         }
 
         /* 1. UHRZEIT & DATUM */
         .time-box { grid-column: 1; padding: 10px; }
-        .clock { font-size: 6rem; font-weight: bold; margin: 0; line-height: 1; }
-        .date { 
-            font-size: 2.5rem; /* Größer */
-            font-weight: bold; /* Dick wie die Uhr */
-            opacity: 1; 
-            margin-top: 10px;
-            color: #fff;
-        }
+        .clock { font-size: 5.5rem; font-weight: bold; margin: 0; }
+        .date { font-size: 1.5rem; opacity: 0.8; }
 
-        /* 2. KALENDER (Rechts) */
+        /* 2. KALENDER (Rechts) - Hier sind jetzt beide IDs drin */
         .calendar-box {
             grid-column: 2; grid-row: 1 / span 2;
             background: var(--glass); border-radius: 30px; border: 1px solid var(--glass-border);
@@ -44,64 +39,54 @@
         }
         .calendar-box iframe {
             width: 100%; height: 100%; border: none; border-radius: 20px;
+            /* Invert-Filter macht den Google Kalender dunkel/passend zum Design */
             filter: invert(0.9) hue-rotate(180deg) opacity(0.7);
         }
 
-        /* 3. WETTER RADAR (Kleiner gemacht) */
+        /* 3. WETTER RADAR */
         .weather-box {
             grid-column: 1; grid-row: 2;
             background: var(--glass); border-radius: 30px; border: 1px solid var(--glass-border);
             overflow: hidden; position: relative;
-            max-height: 350px; /* Begrenzt die Höhe des Wetterfensters */
         }
         .weather-box iframe {
-            position: absolute; width: 180%; height: 180%; top: -40%; left: -40%; border: none;
+            position: absolute; width: 170%; height: 170%; top: -35%; left: -35%; border: none;
         }
 
-        /* 4. UNTERER BEREICH (Buttons) */
+        /* 4. UNTERER BEREICH (Wochenplan & Info) */
         .widget-placeholder {
             grid-column: 1 / span 2;
             display: flex;
-            flex-direction: column; /* Buttons untereinander */
-            align-items: flex-start;
-            gap: 15px;
-            padding-top: 20px;
-        }
-
-        .btn {
-            border: none; color: white;
-            padding: 20px 50px; border-radius: 20px; font-weight: bold;
-            cursor: pointer; font-size: 1.2rem; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            transition: transform 0.1s;
-            width: 300px; /* Einheitliche Breite */
-            text-align: center;
-        }
-        
-        .wochenplan-btn { background: #6c5ce7; }
-        .spotify-btn { 
-            background: #1DB954; /* Spotify Grün */
-            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            gap: 25px;
         }
 
-        .btn:active { transform: scale(0.95); }
+        .wochenplan-btn {
+            background: #6c5ce7; border: none; color: white;
+            padding: 25px 55px; border-radius: 25px; font-weight: bold;
+            cursor: pointer; font-size: 1.3rem; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        .wochenplan-btn:active { transform: scale(0.95); }
 
-        /* OVERLAY FÜR WOCHENPLAN */
+        /* POPUP FÜR WOCHENPLAN */
         #plan-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
-        .overlay-content { width: 94%; height: 92%; background: white; border-radius: 35px; overflow: hidden; }
+        .overlay-content { width: 94%; height: 92%; background: white; border-radius: 35px; overflow: hidden; position: relative; }
+        .close-btn {
+            position: absolute; top: 20px; right: 20px; z-index: 1001;
+            padding: 15px 25px; background: #ff7675; color: white; border: none; border-radius: 15px; font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
     <div class="time-box">
         <div id="clock" class="clock">00:00</div>
-        <div id="date" class="date">Lade...</div>
+        <div id="date">Lade...</div>
     </div>
 
     <div class="weather-box">
@@ -109,16 +94,15 @@
     </div>
 
     <div class="calendar-box">
-        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
+        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312@gmail.com&src=c366726f2240200ceddc4682c9f164245967bcd7cb235ea9d8dad27f9fa8ee82%40group.calendar.google.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"></iframe>
     </div>
 
     <div class="widget-placeholder">
-        <button class="btn wochenplan-btn" onclick="togglePlan(true)">🍴 WOCHENPLAN</button>
-        <button class="btn spotify-btn" onclick="window.location.href='spotify:track:7qiZ3oTQuZzyuS099q9S3S'">🎵 SPOTIFY</button>
+        <button class="wochenplan-btn" onclick="togglePlan(true)">🍴 WOCHENPLAN</button>
     </div>
 
     <div id="plan-overlay">
-        <button style="position:absolute; top:25px; right:25px; padding:15px 25px; background:#ff7675; color:white; border:none; border-radius:15px; font-weight:bold;" onclick="togglePlan(false)">Schließen X</button>
+        <button class="close-btn" onclick="togglePlan(false)">Schließen X</button>
         <div class="overlay-content">
             <iframe id="plan-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
@@ -127,12 +111,8 @@
     <script>
         function updateTime() {
             const now = new Date();
-            // Uhrzeit
             document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            
-            // Datum Format: 11. Mai 2026
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', options);
+            document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' });
         }
         setInterval(updateTime, 1000);
         updateTime();
