@@ -33,10 +33,11 @@
             text-align: center;
             padding: 18px;
             border-radius: 15px;
-            border: none;
+            text-decoration: none;
             font-weight: bold;
             font-size: 1.2rem;
             margin-bottom: 25px;
+            border: none;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -51,7 +52,7 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border-left: 15px solid var(--primary-lila);
-            box-sizing: border-box;
+            position: relative;
         }
 
         .tag-name {
@@ -66,8 +67,7 @@
         .label { font-size: 0.75rem; font-weight: bold; color: #e67e22; margin-top: 12px; text-transform: uppercase; }
         .meal-text { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); margin-top: 4px; }
 
-        /* Anleitung klappbar */
-        .details { display: none; margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 10px; font-size: 0.95rem; color: #555; line-height: 1.4; }
+        .details { display: none; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; font-style: italic; color: #555; }
 
         .recipe-btn {
             display: block; width: 100%; background: white; border: 2px solid var(--primary-lila);
@@ -80,7 +80,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -90,13 +90,12 @@
             background: white;
             width: 90%;
             max-width: 450px;
-            max-height: 85vh;
+            max-height: 80vh;
             border-radius: 25px;
             padding: 25px;
             overflow-y: auto;
             position: relative;
             border-left: 15px solid var(--secondary-green);
-            box-sizing: border-box;
         }
 
         .close-btn {
@@ -110,7 +109,6 @@
             cursor: pointer;
         }
 
-        /* Einkaufsliste Zeilen */
         .item-row {
             display: flex;
             align-items: center;
@@ -119,7 +117,177 @@
             cursor: pointer;
         }
 
-        .checkbox { width: 22px; height: 22px; border: 2px solid var(--secondary-green); border-radius: 6px; margin-right: 15px; flex-shrink: 0; }
+        .checkbox { width: 22px; height: 22px; border: 2px solid var(--secondary-green); border-radius: 6px; margin-right: 15px; }
         .done .checkbox { background-color: var(--secondary-green); }
         .done .item-text { text-decoration: line-through; color: #b2bec3; }
-        .item-text { font-size: 1.1rem; color: var(--text-dark); }
+    </style>
+</head>
+<body>
+
+    <h1>🍴 Unser Wochenplan</h1>
+
+    <button class="open-list-btn" onclick="openShoppingList()">🛒 Einkaufsliste öffnen</button>
+
+    <div id="plan-container">Lade Wochenplan...</div>
+
+    <div id="overlay">
+        <div class="overlay-content">
+            <button class="close-btn" onclick="closeShoppingList()">Schließen</button>
+            <h2 style="color: var(--secondary-green);">Einkaufsliste</h2>
+            <div id="shopping-list-content">Lade Liste...</div>
+        </div>
+    </div>
+
+    <script>
+        const sheetId = '14N2waZuQo-CaowyNgu20QvgoQdBaWWxnzggkoo9BXo8';
+         // Die URLs für den JSON-Abruf (Wochenplan gid=0, Einkaufsliste gid=1056757043)
+    const planUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pubhtml?gid=0&single=true`;
+    const listUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pubhtml?gid=1056757043&single=true`;
+
+
+        // WOCHENPLAN LADEN
+        function loadPlan() {
+            fetch(planUrl)
+                .then(res => res.text())
+                .then(data => {
+                    const json = JSON.parse(data.substr(47).slice(0, -2));
+                    const rows = json.table.rows;
+                    let html = '';
+                    rows.forEach((row, index) => {
+                        const tag = row.c[0]?.v || '';
+                        const haupt = row.c[1]?.v || '';
+                        const nach = row.c[2]?.v || '';
+                        const info = row.c[3]?.v || 'Keine Details vorhanden.';
+
+                        if(tag && tag !== "Tag") {
+                            html += `
+                                <div class="card">
+                                    <div class="tag-name">${tag}</div>
+                                    <div class="label">HAUPTSPEISE</div>
+                                    <div class="meal-text">${haupt}</div>
+                                    <div class="label">NACHSPEISE</div>
+                                    <div class="meal-text">${nach}</div>
+                                    <div class="details" id="details-${index}">${info}</div>
+                                    <button class="recipe-btn" onclick="toggleDetails(${index})">Anleitung anzeigen →</button>
+                                </div>`;
+                        }
+                    });
+                    document.getElementById('plan-container').innerHTML = html;
+                });
+        }
+
+        // EINKAUFSLISTE LADEN (Overlay)
+        function openShoppingList() {
+            document.getElementById('overlay').style.display = 'flex';
+            fetch(listUrl)
+                .then(res => res.text())
+                .then(data => {
+                    const json = JSON.parse(data.substr(47).slice(0, -2));
+                    const rows = json.table.rows;
+                    let html = '';
+                    rows.forEach(row => {
+                        const zutat = row.c[0]?.v || '';
+                        if(zutat && zutat !== "Zutat") {
+                            html += `
+                                <div class="item-row" onclick="this.classList.toggle('done')">
+                                    <div class="checkbox"></div>
+                                    <div class="item-text">${zutat}</div>
+                                </div>`;
+                        }
+                    });
+                    document.getElementById('shopping-list-content').innerHTML = html;
+                });
+        }
+
+        function closeShoppingList() { document.getElementById('overlay').style.display = 'none'; }
+        function toggleDetails(id) {
+            const el = document.getElementById(`details-${id}`);
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Start
+        loadPlan();
+    </script>
+</body>
+</html>
+
+alt<script>
+    // DEINE SHEET-ID
+    const sheetId = '14N2waZuQo-CaowyNgu20QvgoQdBaWWxnzggkoo9BXo8';
+
+    // Die URLs für den JSON-Abruf (Wochenplan gid=0, Einkaufsliste gid=1056757043)
+    const planUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pubhtml?gid=0&single=true`;
+    const listUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Wor16jblAtFPZRcn3JAizIATOy7reZWFpyQxaNh4x3p1aLIB-Wjt_k4S6IXbPo1PldYB5GBqQ8ZA/pubhtml?gid=1056757043&single=true`;
+
+    // WOCHENPLAN LADEN
+    function loadPlan() {
+        fetch(planUrl)
+            .then(res => res.text())
+            .then(data => {
+                // Bereinigt die Google-Antwort (entfernt den Sicherheits-Header)
+                const json = JSON.parse(data.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+                const container = document.getElementById('plan-container');
+                container.innerHTML = '';
+
+                rows.forEach((row, index) => {
+                    const tag = row.c[0] ? row.c[0].v : '';
+                    const haupt = row.c[1] ? row.c[1].v : '';
+                    const nach = row.c[2] ? row.c[2].v : '';
+                    const info = row.c[3] ? row.c[3].v : 'Keine Details vorhanden.';
+
+                    if(tag && tag !== "Tag") {
+                        const card = `
+                            <div class="card">
+                                <div class="tag-name">${tag}</div>
+                                <div class="label">HAUPTSPEISE</div>
+                                <div class="meal-text">${haupt}</div>
+                                <div class="label">NACHSPEISE</div>
+                                <div class="meal-text">${nach}</div>
+                                <div class="details" id="details-${index}">${info}</div>
+                                <button class="recipe-btn" onclick="toggleDetails(${index})">Anleitung anzeigen →</button>
+                            </div>`;
+                        container.innerHTML += card;
+                    }
+                });
+            })
+            .catch(err => console.error("Fehler Plan:", err));
+    }
+
+    // EINKAUFSLISTE LADEN (Overlay)
+    function openShoppingList() {
+        document.getElementById('overlay').style.display = 'flex';
+        document.getElementById('shopping-list-content').innerHTML = 'Lade Liste...';
+        
+        fetch(listUrl)
+            .then(res => res.text())
+            .then(data => {
+                const json = JSON.parse(data.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+                const listContainer = document.getElementById('shopping-list-content');
+                listContainer.innerHTML = '';
+
+                rows.forEach(row => {
+                    const zutat = row.c[0] ? row.c[0].v : '';
+                    if(zutat && zutat !== "Zutat") {
+                        const item = document.createElement('div');
+                        item.className = 'item-row';
+                        item.onclick = function() { this.classList.toggle('done'); };
+                        item.innerHTML = `<div class="checkbox"></div><div class="item-text">${zutat}</div>`;
+                        listContainer.appendChild(item);
+                    }
+                });
+            })
+            .catch(err => console.error("Fehler Liste:", err));
+    }
+
+    function closeShoppingList() { document.getElementById('overlay').style.display = 'none'; }
+    
+    function toggleDetails(id) {
+        const el = document.getElementById(`details-${id}`);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Beim Start Plan laden
+    loadPlan();
+</script>
