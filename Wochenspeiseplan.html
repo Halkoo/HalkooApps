@@ -3,153 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wochenplan</title>
+    <title>Wochenspeiseplan</title>
     <style>
         body {
-            background-color: #1a1a1a;
-            color: white;
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 20px;
-            text-align: center;
         }
 
-        h1 { font-size: 1.5rem; margin-bottom: 15px; }
-
-        /* Der grüne Einkaufslisten-Button */
         .einkauf-btn {
-            display: inline-block;
-            background-color: #00f2c3;
-            color: #1a1a1a;
-            padding: 10px 25px;
-            border-radius: 10px;
+            display: block;
+            width: 100%;
+            background-color: #27ae60;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
         }
 
-        /* Das Raster wie auf dem Foto (2 Spalten) */
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background-color: #2a2a2a;
-            border-radius: 15px;
+        .tag-card {
+            background-color: white;
+            border-radius: 8px;
             padding: 15px;
-            text-align: left;
-            border-bottom: 5px solid #6c5ce7; /* Lila Schatten/Kante unten */
-            box-shadow: 5px 5px 0px #4834d4; /* Der lila Versatz-Effekt */
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .tag-title {
             font-size: 1.2rem;
             font-weight: bold;
+            color: #2c3e50;
             margin-bottom: 10px;
-        }
-
-        .label {
-            color: #ff7675; /* Rötliches Orange wie auf dem Foto */
-            font-size: 0.65rem;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-
-        .meal {
-            font-size: 0.95rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #444; /* Die Trennlinie */
+            border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
 
-        .recipe-btn {
-            background-color: #5d52cc;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 8px;
-            width: 100%;
-            margin-top: 10px;
-            font-size: 0.75rem;
-            cursor: pointer;
+        .label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        .meal {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .recipe {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #34495e;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
 
-    <h1>🍴 Unser Wochenplan</h1>
-    
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 Einkaufsliste öffnen</a>
+    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
 
-    <div class="container">
-        <div class="card">
-            <div class="tag-title">Montag</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Crunchy Feta & Pommes</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Protein Schokobrötchen</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Montag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Crunchy Feta & Pommes</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Protein Schokobrötchen</div>
+        <div class="recipe">Feta panieren, Airfryer 12 Min. bei 200°C.</div>
+    </div>
 
-        <div class="card">
-            <div class="tag-title">Dienstag</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Protein Spätzle-Pfanne</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Skyr mit Beeren</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Dienstag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Protein Spätzle-Pfanne</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Skyr mit Beeren</div>
+        <div class="recipe">Hack braten, Spätzle dazu, Käse schmelzen.</div>
+    </div>
 
-        <div class="card">
-            <div class="tag-title">Mittwoch</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Cremige Garnelen-Pasta</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Quark-Auflauf</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Mittwoch</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Cremige Garnelen-Pasta</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Quark-Auflauf</div>
+        <div class="recipe">Garnelen braten, Frischkäse-Sauce dazu.</div>
+    </div>
 
-        <div class="card">
-            <div class="tag-title">Donnerstag</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Chicken Fajita Bowl</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Schoko-Quark-Pudding</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Donnerstag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Chicken Fajita Bowl</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Schoko-Quark-Pudding</div>
+        <div class="recipe">Hähnchen & Paprika braten, auf Reis servieren.</div>
+    </div>
 
-        <div class="card">
-            <div class="tag-title">Freitag</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Protein Thunfisch-Pizza</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Apfel mit Erdnussmus</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Freitag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Protein Thunfisch-Pizza</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Apfel mit Erdnussmus</div>
+        <div class="recipe">Quark-Teig belegen, 12 Min. bei 220°C backen.</div>
+    </div>
 
-        <div class="card">
-            <div class="tag-title">Samstag</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Garnelen-Bowl mit Kartoffel</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Mango-Lassi (Protein)</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Samstag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Garnelen-Bowl mit Kartoffel</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Mango-Lassi (Protein)</div>
+        <div class="recipe">Kartoffelwürfel backen, Garnelen braten.</div>
+    </div>
 
-        <div class="card">
-            <div class="tag-title">Sonntag</div>
-            <div class="label">HAUPTSPEISE</div>
-            <div class="meal">Sonntagsessen nach Wahl</div>
-            <div class="label">NACHSPEISE</div>
-            <div class="meal">Eis mit heißen Beeren</div>
-            <button class="recipe-btn">Anleitung anzeigen ↓</button>
-        </div>
+    <div class="tag-card">
+        <div class="tag-title">Sonntag</div>
+        <div class="label">HAUPTSPEISE</div>
+        <div class="meal">Sonntagsessen nach Wahl</div>
+        <div class="label">NACHSPEISE</div>
+        <div class="meal">Eis mit heißen Beeren</div>
+        <div class="recipe">Gemütlich kochen oder bestellen.</div>
     </div>
 
 </body>
