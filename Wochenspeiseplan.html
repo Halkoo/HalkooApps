@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wochenspeiseplan</title>
+    <title>Wochenplan</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -15,96 +15,80 @@
             align-items: center;
         }
 
-        h1 { color: #333; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-
         .einkauf-btn {
             background-color: #63b39d;
             color: white;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            padding: 15px;
-            border-radius: 15px;
+            padding: 15px 25px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        #plan-container {
+        .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 400px;
         }
 
         .card {
             background: white;
-            border-radius: 25px;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-            border-left: 15px solid #6c5ce7;
-            box-sizing: border-box;
+            margin-bottom: 15px;
+            border-left: 10px solid #6c5ce7;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        .tag-name {
-            font-size: 1.6rem;
+        .tag-header {
+            font-size: 1.4rem;
             font-weight: bold;
             color: #6c5ce7;
             margin-bottom: 10px;
             border-bottom: 1px solid #f0f2f5;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
 
         .label {
             font-size: 0.75rem;
-            font-weight: bold;
             color: #e67e22;
-            margin-top: 15px;
+            font-weight: bold;
             text-transform: uppercase;
+            margin-top: 10px;
         }
 
-        .meal-text {
-            font-size: 1.25rem;
+        .content {
+            font-size: 1.1rem;
             font-weight: 600;
             color: #2d3436;
-            margin-top: 5px;
         }
 
         .recipe-btn {
             display: block;
-            width: 100%;
-            background-color: white;
+            margin-top: 15px;
+            padding: 10px;
+            text-align: center;
             border: 2px solid #6c5ce7;
             color: #6c5ce7;
-            padding: 12px;
-            border-radius: 12px;
-            margin-top: 20px;
-            text-align: center;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <h1>🍴 Unser Wochenplan</h1>
+    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 ZUR EINKAUFSLISTE</a>
 
-    <a href="Einkaufsliste.html" class="einkauf-btn">🛒 Zur Einkaufsliste</a>
-
-    <div id="plan-container">
-        <p style="text-align:center; color:#888;">Lade Speiseplan...</p>
-    </div>
+    <div class="container" id="plan-container">
+        </div>
 
     <script>
-        const sheetId = '1vVp1w07pE9kX57M-L8vXoU5O5XU-m1I8hXN9XF5XWk8'; 
+        // DEINE TABELLEN-ID (die aus deinem Link von vorhin)
+        const sheetId = '1vVp1w07pE9kX57M-L8vXoU5O5XU-m1I8hXN9XF5XWk8';
         const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
         fetch(base)
@@ -113,31 +97,29 @@
                 const json = JSON.parse(data.substr(47).slice(0, -2));
                 const rows = json.table.rows;
                 const container = document.getElementById('plan-container');
-                container.innerHTML = ''; 
+                container.innerHTML = '';
 
                 rows.forEach(row => {
                     const tag = row.c[0] ? row.c[0].v : '';
                     const haupt = row.c[1] ? row.c[1].v : '';
                     const nach = row.c[2] ? row.c[2].v : '';
 
-                    if(tag && tag !== "Tag") { 
-                        const cardHtml = `
+                    if(tag && tag !== "Tag") {
+                        const card = `
                             <div class="card">
-                                <div class="tag-name">${tag}</div>
+                                <div class="tag-header">${tag}</div>
                                 <div class="label">HAUPTSPEISE</div>
-                                <div class="meal-text">${haupt}</div>
+                                <div class="content">${haupt}</div>
                                 <div class="label">NACHSPEISE</div>
-                                <div class="meal-text">${nach}</div>
-                                <a href="#" class="recipe-btn">Anleitung anzeigen →</a>
+                                <div class="content">${nach}</div>
+                                <a href="#" class="recipe-btn">ANLEITUNG ANZEIGEN</a>
                             </div>
                         `;
-                        container.innerHTML += cardHtml;
+                        container.innerHTML += card;
                     }
                 });
             })
-            .catch(err => {
-                document.getElementById('plan-container').innerHTML = "<p>Fehler beim Laden.</p>";
-            });
+            .catch(err => console.error("Fehler beim Laden:", err));
     </script>
 </body>
 </html>
