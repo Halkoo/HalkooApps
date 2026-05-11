@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Steuerung</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1a1c2c;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER MIT ZURÜCK-BUTTON */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            padding: 15px 30px;
+            background-color: #444;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        h1 { margin: 0; font-size: 2rem; color: #00a1ff; }
+
+        /* GRID FÜR DEINE GERÄTE */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Zwei Spalten nebeneinander */
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        .widget {
+            background: rgba(255,255,255,0.05);
+            border-radius: 25px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .widget h2 { margin-top: 0; font-size: 1.5rem; opacity: 0.9; }
+
+        /* PLATZHALTER FÜR APPS ODER IFRAMES */
+        .app-link {
+            width: 100%;
+            padding: 20px;
+            background: #00a1ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-btn">← DASHBOARD</a>
+        <h1>Haussteuerung</h1>
+        <div style="width: 100px;"></div>
+    </div>
+
+    <div class="grid">
+        <div class="widget">
+            <h2>🌡️ Heizung</h2>
+            <p>Hier kannst du später das Heizungs-Portal einbinden.</p>
+            </div>
+
+        <div class="widget">
+            <h2>💡 Beleuchtung</h2>
+            <p>Smart Life Szenen & Lampen</p>
+            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="app-link">Smart Life App öffnen</a>
+        </div>
+
+        <div class="widget">
+            <h2>🔌 Steckdosen</h2>
+            <p>Küche & Wohnzimmer</p>
+        </div>
+
+        <div class="widget">
+            <h2>🛡️ Sicherheit</h2>
+            <p>Kamera-Vorschau (optional)</p>
+        </div>
+    </div>
+
+    <script>
+        // Auch hier: Cache leeren beim Laden
+        if (typeof fully !== 'undefined') { fully.clearCache(); }
+    </script>
+</body>
+</html>
