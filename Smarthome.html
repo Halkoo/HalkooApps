@@ -3,115 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Home Steuerung</title>
+    <title>Geräte Steuerung</title>
     <style>
         * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #1a1c2c;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000; /* Tiefschwarz wie auf Hauptseite */
             color: white;
             margin: 0;
             padding: 20px;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
+        /* Header Bereich */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .back-btn {
-            padding: 15px 30px;
-            background-color: #444;
+            padding: 12px 25px;
+            background-color: #1a1c2c;
             color: white;
             text-decoration: none;
-            border-radius: 15px;
+            border-radius: 12px;
             font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            transition: background 0.3s;
         }
 
-        h1 { margin: 0; font-size: 2rem; color: #00a1ff; }
+        .back-btn:hover { background-color: #333; }
 
-        .grid {
+        h1 { margin: 0; font-size: 1.8rem; color: #ffffff; }
+
+        /* Das 3-Spalten Layout */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr 1.3fr; /* Rechte Spalte für Alexa etwas breiter */
             gap: 20px;
             flex-grow: 1;
+            height: calc(100% - 80px);
         }
 
-        .widget {
-            background: rgba(255,255,255,0.05);
-            border-radius: 25px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .column {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            gap: 20px;
         }
 
-        .widget h2 { margin-top: 0; font-size: 1.5rem; opacity: 0.9; }
+        h3 {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        .app-link {
-            width: 100%;
-            padding: 20px;
-            background: #00a1ff;
-            color: white;
-            text-decoration: none;
+        /* Kacheln / Widgets */
+        .widget {
+            background: #1a1c2c;
             border-radius: 15px;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-            display: block;
+            padding: 20px;
+            border: 1px solid #2d2f3b;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
         }
 
-        /* Spezialfarben für die Buttons */
-        .btn-calor { background-color: #ff5e57; }
-        .btn-switch { background-color: #e74c3c; }
+        /* Spezialfarben */
+        .heat-active { background: #cc6600; border: none; } /* Orange für Heizung */
+        .border-blue { border-left: 6px solid #00a1ff; }
+        .border-red { border-left: 6px solid #e74c3c; }
+
+        .widget-title { font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px; }
+        .widget-value { font-size: 1.6rem; font-weight: bold; }
+
+        /* Alexa iframe Container */
+        .alexa-container {
+            background: #ffffff;
+            border-radius: 15px;
+            flex-grow: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="halkoo.github.io/HalkooApps/dashboard.html" class="back-btn">← DASHBOARD</a>
-        <h1>Haussteuerung</h1>
-        <div style="width: 100px;"></div>
+        <a href="index.html" class="back-btn">← DASHBOARD</a>
+        <h1>Geräte Steuerung</h1>
+        <div style="width: 120px;"></div> <!-- Ausgleich für Zentrierung -->
     </div>
 
-    <div class="grid">
-        <div class="widget">
-            <h2>🌡️ Heizung</h2>
-            <p>Calor BT Steuerung</p>
-            <a href="intent://open#Intent;scheme=calorbt;package=com.eurotronic.calorbt;end" class="app-link btn-calor">Calor BT öffnen</a>
+    <div class="dashboard-grid">
+        
+        <!-- SPALTE 1: HEIZUNG (Calor BT) -->
+        <div class="column">
+            <h3>🌡️ Heizung</h3>
+            <a href="intent://open#Intent;scheme=calorbt;package=com.eurotronic.calorbt;end" class="widget heat-active">
+                <div class="widget-title">Wohnzimmer</div>
+                <div class="widget-value">21.0°C</div>
+            </a>
+            <div class="widget">
+                <div class="widget-title">Küche</div>
+                <div class="widget-value">20.5°C</div>
+            </div>
+            <div class="widget">
+                <div class="widget-title">Bad</div>
+                <div class="widget-value">18.0°C</div>
+            </div>
         </div>
 
-        <div class="widget">
-            <h2>💡 Beleuchtung</h2>
-            <p>Smart Life Szenen</p>
-            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="app-link">Smart Life öffnen</a>
+        <!-- SPALTE 2: GERÄTE (SwitchBot / Smart Life) -->
+        <div class="column">
+            <h3>🛡️ Sicherheit & Licht</h3>
+            <a href="intent://open#Intent;scheme=switchbot;package=com.theswitchbot.switchbot;end" class="widget border-red">
+                <div class="widget-title">SwitchBot</div>
+                <div class="widget-value">Türschloss 🔐</div>
+            </a>
+            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="widget border-blue">
+                <div class="widget-title">Smart Life</div>
+                <div class="widget-value">Lichtszenen 💡</div>
+            </a>
+            <div class="widget">
+                <div class="widget-title">Steckdosen</div>
+                <div class="widget-value">Alle Aus</div>
+            </div>
         </div>
 
-        <div class="widget">
-            <h2>🔌 Steckdosen</h2>
-            <p>Smart Life Geräte</p>
-            <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="app-link">Steuerung</a>
+        <!-- SPALTE 3: ALEXA WIDGET PORTAL -->
+        <div class="column">
+            <h3>🎙️ Alexa Steuerung</h3>
+            <div class="alexa-container">
+                <!-- Hier lädt das Alexa Web Interface -->
+                <iframe src="https://alexa.amazon.de/spa/index.html"></iframe>
+            </div>
         </div>
 
-        <div class="widget">
-            <h2>🛡️ Sicherheit</h2>
-            <p>SwitchBot Smart Lock</p>
-            <a href="intent://open#Intent;scheme=switchbot;package=com.theswitchbot.switchbot;end" class="app-link btn-switch">SwitchBot öffnen</a>
-        </div>
     </div>
 
     <script>
-        if (typeof fully !== 'undefined') { fully.clearCache(); }
+        // Verhindert das Caching beim Reload im Fully Browser
+        if (typeof fully !== 'undefined') {
+            fully.clearCache();
+        }
     </script>
 </body>
 </html>
