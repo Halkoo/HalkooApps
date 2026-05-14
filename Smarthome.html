@@ -48,11 +48,11 @@ h1 { margin: 0; font-size: 1.8rem; color: #ffffff; }
 .column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
 
 h3 {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #7f8c8d;
     margin: 0 0 5px 0;
     text-transform: uppercase;
@@ -62,7 +62,7 @@ h3 {
 .widget {
     background: #1a1c2c;
     border-radius: 15px;
-    padding: 20px;
+    padding: 15px 20px;
     border: 1px solid #2d2f3b;
     display: flex;
     flex-direction: column;
@@ -70,18 +70,18 @@ h3 {
     text-decoration: none;
     color: white;
     cursor: pointer;
+    min-height: 90px; 
     transition: all 0.2s ease;
 }
 
-.widget:active { transform: scale(0.95); }
+.widget:active { transform: scale(0.96); }
 
-/* Spezialfarben */
-.heat-active { background: #cc6600; border: none; } 
-.border-blue { border-left: 6px solid #00a1ff; }
 .border-red { border-left: 6px solid #e74c3c; }
+.border-blue { border-left: 6px solid #00a1ff; }
+.heat-active { background: #cc6600; border: none; }
 
-.widget-title { font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px; }
-.widget-value { font-size: 1.6rem; font-weight: bold; }
+.widget-title { font-size: 0.85rem; opacity: 0.7; margin-bottom: 3px; }
+.widget-value { font-size: 1.3rem; font-weight: bold; }
 
 #hidden_frame { display: none; }
 </style>
@@ -111,33 +111,45 @@ h3 {
 
     <!-- SPALTE 2: APPS -->
     <div class="column">
-        <h3>🛡️ Apps öffnen</h3>
+        <h3>🛡️ Apps</h3>
         <a href="intent://open#Intent;scheme=switchbot;package=com.theswitchbot.switchbot;end" class="widget border-red">
             <div class="widget-title">SwitchBot</div>
             <div class="widget-value">Türschloss 🔐</div>
-    
+        </a>
+        <div class="widget border-blue">
+            <div class="widget-title">Status</div>
+            <div class="widget-value">System Aktiv</div>
+        </div>
     </div>
 
-    <!-- SPALTE 3: ALEXA SMART BUTTON -->
+    <!-- SPALTE 3: ALEXA BUTTONS -->
     <div class="column">
-        <h3>🎙️ Alexa Steuerung</h3>
+        <h3>🎙️ Alexa Befehle</h3>
         
-        <!-- Dieser Button wechselt die Farbe -->
+        <!-- DEIN COUCH LICHT (MIT FUNKTION) -->
         <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6" 
            target="hidden_frame" 
-           id="alexaBtn"
+           id="btn1" 
            class="widget" 
-           style="background: #1a1c2c; border-left: 6px solid #333;"
-           onclick="toggleAlexa()">
-            <div id="alexaTitle" class="widget-title">Couch Licht</div>
-            <div id="alexaValue" class="widget-value">AUS 🌑</div>
+           style="background-color: #1a1c2c; border-left: 6px solid #333;" 
+           onclick="toggle('btn1', 'val1', 'https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6', 'HIER_AUS_LINK_EINFÜGEN')">
+            <div class="widget-title">Licht</div>
+            <div id="val1" class="widget-value">AUS 🌑</div>
         </a>
 
-        <!-- Zweiter Button für "Alles aus" -->
-        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d" target="hidden_frame" class="widget border-red">
-            <div class="widget-title">Wohnzimmer</div>
+        <!-- DEIN ALLES AUS BUTTON -->
+        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d" 
+           target="hidden_frame" 
+           class="widget border-red">
+            <div class="widget-title">Szenen</div>
             <div class="widget-value">ALLES AUS 💤</div>
         </a>
+
+        <!-- LEERER PLATZHALTER BUTTON -->
+        <div class="widget border-blue">
+            <div class="widget-title">Frei</div>
+            <div class="widget-value">Befehl 3</div>
+        </div>
     </div>
 
 </div>
@@ -145,32 +157,22 @@ h3 {
 <iframe name="hidden_frame" id="hidden_frame"></iframe>
 
 <script>
-// Deine Voice Monkey Links
-const linkAn = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6";
-const linkAus = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d";
-
-function toggleAlexa() {
-    const btn = document.getElementById("alexaBtn");
-    const val = document.getElementById("alexaValue");
+function toggle(btnId, valId, linkAn, linkAus) {
+    const btn = document.getElementById(btnId);
+    const val = document.getElementById(valId);
     
-    // Wenn er gerade dunkel ist -> Umschalten auf BLAU (AN)
+    // Farbaustausch Logik
     if (btn.style.backgroundColor === "rgb(26, 28, 44)" || btn.style.backgroundColor === "#1a1c2c") {
-        btn.style.backgroundColor = "#00a0d1"; // Alexa Blau
+        btn.style.backgroundColor = "#00a0d1"; 
         btn.style.borderLeftColor = "#ffffff";
         val.innerHTML = "AN 💡";
         btn.href = linkAn;
-    } 
-    // Wenn er blau ist -> Umschalten auf DUNKEL (AUS)
-    else {
-        btn.style.backgroundColor = "#1a1c2c"; // Ursprungsfarbe
+    } else {
+        btn.style.backgroundColor = "#1a1c2c"; 
         btn.style.borderLeftColor = "#333";
         val.innerHTML = "AUS 🌑";
         btn.href = linkAus;
     }
-}
-
-if (typeof fully !== 'undefined') {
-    fully.clearCache();
 }
 </script>
 </body>
