@@ -1,51 +1,181 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Mein Dashboard</title>
-    <style>
-        body { background-color: #000; color: white; font-family: sans-serif; margin: 0; padding: 20px; overflow: hidden; }
-        .container { display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Der Kalender Bereich */
-        iframe.calendar { border: 0; width: 100%; height: 800px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geräte Steuerung</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #000000;
+    color: white;
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-        /* Der Button Bereich */
-        .button-area { text-align: center; padding-top: 20px; }
-        
-        .alexa-btn {
-            background-color: #00a0d1; /* Alexa Blau */
-            color: white;
-            padding: 25px 50px;
-            text-decoration: none;
-            font-size: 30px;
-            border-radius: 15px;
-            display: inline-block;
-            font-weight: bold;
-            border: 3px solid #ffffff;
-            cursor: pointer;
-        }
-        .alexa-btn:active { background-color: #007da4; transform: scale(0.98); }
-    </style>
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.back-btn {
+    padding: 12px 25px;
+    background-color: #1a1c2c;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    border: 1px solid #333;
+}
+
+h1 { margin: 0; font-size: 1.8rem; color: #ffffff; }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 20px;
+    flex-grow: 1;
+    height: calc(100% - 80px);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+h3 {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin: 0 0 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.widget {
+    background: #1a1c2c;
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #2d2f3b;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.widget:active { transform: scale(0.95); }
+
+/* Spezialfarben */
+.heat-active { background: #cc6600; border: none; } 
+.border-blue { border-left: 6px solid #00a1ff; }
+.border-red { border-left: 6px solid #e74c3c; }
+
+.widget-title { font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px; }
+.widget-value { font-size: 1.6rem; font-weight: bold; }
+
+#hidden_frame { display: none; }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Dein Kalender (Höhe auf 800px angepasst) -->
-        <iframe class="calendar" src="https://calendar.google.com/calendar/embed?src=nomabi3312%40gmail.com&ctz=Europe%2FBerlin&mode=WEEK&showTitle=0&showPrint=0&showTabs=1&showCalendars=0&showTz=0" frameborder="0" scrolling="no"></iframe>
+<div class="header">
+    <a href="dashboard.html" class="back-btn">← DASHBOARD</a>
+    <h1>Geräte Steuerung</h1>
+    <div style="width: 120px;"></div>
+</div>
 
-        <!-- Dein neuer Licht-Button -->
-        <div class="button-area">
-            <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6" 
-               target="hidden_frame" 
-               class="alexa-btn">
-               💡 LICHT AN
-            </a>
+<div class="dashboard-grid">
+
+    <!-- SPALTE 1: HEIZUNG -->
+    <div class="column">
+        <h3>🌡️ Heizung</h3>
+        <a href="intent://open#Intent;scheme=calorbt;package=com.eurotronic.calorbt;end" class="widget heat-active">
+            <div class="widget-title">Wohnzimmer</div>
+            <div class="widget-value">21.0°C</div>
+        </a>
+        <div class="widget">
+            <div class="widget-title">Küche</div>
+            <div class="widget-value">20.5°C</div>
         </div>
     </div>
 
-    <!-- WICHTIG: Dieser versteckte Frame verhindert das Neuladen der Seite -->
-    <iframe name="hidden_frame" style="display:none;"></iframe>
+    <!-- SPALTE 2: APPS -->
+    <div class="column">
+        <h3>🛡️ Apps öffnen</h3>
+        <a href="intent://open#Intent;scheme=switchbot;package=com.theswitchbot.switchbot;end" class="widget border-red">
+            <div class="widget-title">SwitchBot</div>
+            <div class="widget-value">Türschloss 🔐</div>
+        </a>
+        <a href="intent://open#Intent;scheme=smartlife;package=com.tuya.smartlife;end" class="widget border-blue">
+            <div class="widget-title">Smart Life</div>
+            <div class="widget-value">Licht-App 💡</div>
+        </a>
+    </div>
 
+    <!-- SPALTE 3: ALEXA SMART BUTTON -->
+    <div class="column">
+        <h3>🎙️ Alexa Steuerung</h3>
+        
+        <!-- Dieser Button wechselt die Farbe -->
+        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6" 
+           target="hidden_frame" 
+           id="alexaBtn"
+           class="widget" 
+           style="background: #1a1c2c; border-left: 6px solid #333;"
+           onclick="toggleAlexa()">
+            <div id="alexaTitle" class="widget-title">Couch Licht</div>
+            <div id="alexaValue" class="widget-value">AUS 🌑</div>
+        </a>
+
+        <!-- Zweiter Button für "Alles aus" -->
+        <a href="HIER_LINK_ALLES_AUS" target="hidden_frame" class="widget border-red">
+            <div class="widget-title">Wohnzimmer</div>
+            <div class="widget-value">ALLES AUS 💤</div>
+        </a>
+    </div>
+
+</div>
+
+<iframe name="hidden_frame" id="hidden_frame"></iframe>
+
+<script>
+// Deine Voice Monkey Links
+const linkAn = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6";
+const linkAus = "HIER_DEINEN_AUS_LINK_VON_VOICE_MONKEY_EINFÜGEN";
+
+function toggleAlexa() {
+    const btn = document.getElementById("alexaBtn");
+    const val = document.getElementById("alexaValue");
+    
+    // Wenn er gerade dunkel ist -> Umschalten auf BLAU (AN)
+    if (btn.style.backgroundColor === "rgb(26, 28, 44)" || btn.style.backgroundColor === "#1a1c2c") {
+        btn.style.backgroundColor = "#00a0d1"; // Alexa Blau
+        btn.style.borderLeftColor = "#ffffff";
+        val.innerHTML = "AN 💡";
+        btn.href = linkAn;
+    } 
+    // Wenn er blau ist -> Umschalten auf DUNKEL (AUS)
+    else {
+        btn.style.backgroundColor = "#1a1c2c"; // Ursprungsfarbe
+        btn.style.borderLeftColor = "#333";
+        val.innerHTML = "AUS 🌑";
+        btn.href = linkAus;
+    }
+}
+
+if (typeof fully !== 'undefined') {
+    fully.clearCache();
+}
+</script>
 </body>
 </html>
