@@ -123,7 +123,10 @@ h3 {
             <div id="valStudio" class="widget-value">offen 🔓</div>
         </div>
     </div>
-
+<a href="intent://open#Intent;scheme=flashmaker;package=com.ly.flashmaker;end" class="widget border-green">
+    <div class="widget-title">3D Drucker</div>
+    <div class="widget-value">3D Drucker⚡</div>
+</a>
     <div class="column">
         <h3>🎙️ Alexa Befehle</h3>
         
@@ -212,35 +215,54 @@ if (typeof fully !== 'undefined') {
     fully.clearCache();
 }
 </script>
-</body>
-</html>
+    // --- HIER DEINE LINKS EINTRAGEN ---
+const links = {
+    couchAn: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6",
+    couchAus: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d",
+    allesAus: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d",
 
-// UNIVERSYLLE FUNKTION FÜR DEINE AN/AUS-BUTTONS
-// btnId       = Die ID des Hauptbuttons (z. B. 'btnX')
-// valId       = Die ID des Textfeldes innen (z. B. 'valX')
-// linkAn      = Der Voice Monkey v3 Link fürs Einschalten
-// linkAus     = Der Voice Monkey v3 Link fürs Ausschalten
+    geraet2An: "HIER_LINK_AN_EINTRAGEN",
+    geraet2Aus: "HIER_LINK_AUS_EINTRAGEN",
+    geraet3An: "HIER_LINK_AN_EINTRAGEN",
+    geraet3Aus: "HIER_LINK_AUS_EINTRAGEN",
+    szeneFrei: "HIER_LINK_EINFACH_EINTRAGEN"
+};
+
+// DIE UNIVERSELLE UMSCHALT-FUNKTION
 function toggleMuster(btnId, valId, linkAn, linkAus) {
     const btn = document.getElementById(btnId);
     const val = document.getElementById(valId);
     
-    // ÜBERPRÜFUNG: Ist der Button gerade im AUS-Zustand (dunkelblau)?
-    if (btn.style.backgroundColor === "rgb(26, 28, 44)") {
-        
-        // ZUSTAND: AN machen
-        btn.style.backgroundColor = "#00a0d1";     // Ändert Hintergrund zu Alexa-Blau
-        btn.style.borderLeftColor = "#ffffff";     // Ändert den linken Rand auf Weiß
-        val.innerHTML = "AN 💡";                   // Ändert den Text und das Emoji
-        
-        sendeBefehl(linkAn);                       // Schickt den AN-Befehl lautlos ab
-        
+    if (btn.style.backgroundColor === "rgb(26, 28, 44)" || btn.style.backgroundColor === "") {
+        btn.style.backgroundColor = "#00a0d1"; 
+        btn.style.borderLeftColor = "#ffffff"; 
+        val.innerHTML = "AN 💡";
+        sendeBefehl(linkAn);
     } else {
-        
-        // ZUSTAND: Wieder AUS machen
-        btn.style.backgroundColor = "rgb(26, 28, 44)"; // Zurück zur dunklen Hintergrundfarbe
-        btn.style.borderLeftColor = "#333";            // Zurück zum grauen Rand
-        val.innerHTML = "AUS 🌑";                      // Zurück zum AUS-Text
-        
-        sendeBefehl(linkAus);                      // Schickt den AUS-Befehl lautlos ab
+        btn.style.backgroundColor = "rgb(26, 28, 44)"; 
+        btn.style.borderLeftColor = "#333"; 
+        val.innerHTML = "AUS 🌑";
+        sendeBefehl(linkAus);
     }
 }
+
+// Der lautlose Hintergrund-Sender
+function sendeBefehl(zielUrl) {
+    if(!zielUrl || zielUrl.startsWith('HIER')) return;
+    
+    fetch(zielUrl, {
+        method: 'POST',
+        mode: 'no-cors'
+    }).catch(err => console.log("Signal gesendet"));
+}
+
+if (typeof fully !== 'undefined') {
+    fully.clearCache();
+}
+</script>
+</body>
+</html>
+
+
+
+     
