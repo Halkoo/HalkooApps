@@ -215,51 +215,7 @@ if (typeof fully !== 'undefined') {
     fully.clearCache();
 }
 </script>
-    // --- HIER DEINE LINKS EINTRAGEN ---
-const links = {
-    couchAn: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6",
-    couchAus: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d",
-    allesAus: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d",
-
-    geraet2An: "HIER_LINK_AN_EINTRAGEN",
-    geraet2Aus: "HIER_LINK_AUS_EINTRAGEN",
-    geraet3An: "HIER_LINK_AN_EINTRAGEN",
-    geraet3Aus: "HIER_LINK_AUS_EINTRAGEN",
-    szeneFrei: "HIER_LINK_EINFACH_EINTRAGEN"
-};
-
-// DIE UNIVERSELLE UMSCHALT-FUNKTION
-function toggleMuster(btnId, valId, linkAn, linkAus) {
-    const btn = document.getElementById(btnId);
-    const val = document.getElementById(valId);
-    
-    if (btn.style.backgroundColor === "rgb(26, 28, 44)" || btn.style.backgroundColor === "") {
-        btn.style.backgroundColor = "#00a0d1"; 
-        btn.style.borderLeftColor = "#ffffff"; 
-        val.innerHTML = "AN 💡";
-        sendeBefehl(linkAn);
-    } else {
-        btn.style.backgroundColor = "rgb(26, 28, 44)"; 
-        btn.style.borderLeftColor = "#333"; 
-        val.innerHTML = "AUS 🌑";
-        sendeBefehl(linkAus);
-    }
-}
-
-// Der lautlose Hintergrund-Sender
-function sendeBefehl(zielUrl) {
-    if(!zielUrl || zielUrl.startsWith('HIER')) return;
-    
-    fetch(zielUrl, {
-        method: 'POST',
-        mode: 'no-cors'
-    }).catch(err => console.log("Signal gesendet"));
-}
-
-if (typeof fully !== 'undefined') {
-    fully.clearCache();
-}
-</script>
+   
 </body>
 </html>
 
