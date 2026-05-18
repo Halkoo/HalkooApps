@@ -82,8 +82,6 @@ h3 {
 
 .widget-title { font-size: 0.85rem; opacity: 0.7; margin-bottom: 3px; }
 .widget-value { font-size: 1.3rem; font-weight: bold; }
-
-#hidden_frame { display: none; }
 </style>
 </head>
 <body>
@@ -96,7 +94,6 @@ h3 {
 
 <div class="dashboard-grid">
 
-    <!-- SPALTE 1: HEIZUNG -->
     <div class="column">
         <h3>🌡️ Heizung</h3>
         <a href="intent://open#Intent;scheme=calorbt;package=com.eurotronic.calorbt;end" class="widget heat-active">
@@ -109,79 +106,75 @@ h3 {
         </div>
     </div>
 
-    <!-- SPALTE 2: Türen -->
     <div class="column">
-    <h3>🔐Türn Versperren</h3>
-    <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/6e2c2296-db26-43b2-9749-7ad2fa0f5be9" class="widget border-red">
-        <div class="widget-title">Wohnung</div>
-        <div class="widget-value">Türschloss 🔐</div>
-    </a>
-    <div class="widget border-blue">
-        <div class="widget-title">Status</div>
-        <div class="widget-value">System Aktiv</div>
- <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/0166c453-8fa8-4ed8-8b75-437825f4eb25K" 
-           target="hidden_frame" 
-           id="schlossBtn" 
-           class="widget" 
-           style="background-color: rgb(26, 28, 44); border-left: 6px solid #e74c3c;" 
-           onclick="toggleSchloss()">
+        <h3>🛡️ Türschloss</h3>
+        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/6e2c2296-db26-43b2-9749-7ad2fa0f5be9" class="widget border-red">
+            <div class="widget-title">Wohnung</div>
+            <div class="widget-value">Zusperren 🔐</div>
+        </a>
+         <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/0166c453-8fa8-4ed8-8b75-437825f4eb25" class="widget border-red">
             <div class="widget-title">Studio</div>
-            <div id="schlossValue" class="widget-value">ZUGESPERRT 🔐</div>
+            <div class="widget-value">Zusperren 🔐</div>
         </a>
+        </div>
+    </div>
 
-    <div class="column">      
-       
-    <!-- SPALTE 3: ALEXA BUTTONS -->
     <div class="column">
-        <h3>💡Geräte</h3>
+        <h3>🎙️ Alexa Befehle</h3>
         
-        <!-- DEIN COUCH LICHT (MIT FUNKTION) -->
-        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6" 
-           target="hidden_frame" 
-           id="btn1" 
-           class="widget" 
-           style="background-color: #1a1c2c; border-left: 6px solid #333;" 
-           onclick="toggle('btn1', 'val1', 'https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6'
-            <div class="widget-title">Licht</div>
-            <div id="val1" class="widget-value">AUS 🌑</div>
-        </a>
+        <div id="alexaBtn" class="widget" style="background-color: rgb(26, 28, 44); border-left: 6px solid #333;" onclick="toggleAlexa()">
+            <div class="widget-title">Couch Licht</div>
+            <div id="alexaValue" class="widget-value">AUS 🌑</div>
+        </div>
 
-        <!-- DEIN ALLES AUS BUTTON -->
-        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d" 
-           target="hidden_frame" 
-           class="widget border-red">
+        <div class="widget border-red" onclick="sendeBefehl('https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d')">
             <div class="widget-title">Szenen</div>
             <div class="widget-value">ALLES AUS 💤</div>
-        </a>
+        </div>
 
-        <!-- LEERER PLATZHALTER BUTTON -->
-        <div class="widget border-blue">
+        <div class="widget border-blue" onclick="sendeBefehl('HIER_NEUEN_LINK_EINFÜGEN')">
             <div class="widget-title">Frei</div>
-            <div class="widget-value">Befehl 3</div>
+            <div class="widget-value">Bereit...</div>
         </div>
     </div>
 
 </div>
 
-<iframe name="hidden_frame" id="hidden_frame"></iframe>
-
 <script>
-function toggle(btnId, valId, linkAn, linkAus) {
-    const btn = document.getElementById(btnId);
-    const val = document.getElementById(valId);
+// Deine Voice Monkey Links
+const linkAn = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6";
+const linkAus = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d";
+
+// Hauptfunktion für den Couch-Licht-Umschalter
+function toggleAlexa() {
+    const btn = document.getElementById("alexaBtn");
+    const val = document.getElementById("alexaValue");
     
-    // Farbaustausch Logik
-    if (btn.style.backgroundColor === "rgb(26, 28, 44)" || btn.style.backgroundColor === "#1a1c2c") {
-        btn.style.backgroundColor = "#00a0d1"; 
+    if (btn.style.backgroundColor === "rgb(26, 28, 44)") {
+        btn.style.backgroundColor = "#00a0d1"; // Alexa Blau
         btn.style.borderLeftColor = "#ffffff";
         val.innerHTML = "AN 💡";
-        btn.href = linkAn;
+        sendeBefehl(linkAn);
     } else {
-        btn.style.backgroundColor = "#1a1c2c"; 
+        btn.style.backgroundColor = "rgb(26, 28, 44)"; // Wieder dunkel
         btn.style.borderLeftColor = "#333";
         val.innerHTML = "AUS 🌑";
-        btn.href = linkAus;
+        sendeBefehl(linkAus);
     }
+}
+
+// Der "Hintergrund-Sender", der die v3-Sperre umgeht
+function sendeBefehl(zielUrl) {
+    if(!zielUrl || zielUrl.startsWith('HIER')) return;
+    
+    fetch(zielUrl, {
+        method: 'POST',
+        mode: 'no-cors' // Zwingt den Browser das Signal ohne Meckern zu senden
+    }).catch(err => console.log("Fehler abgefangen"));
+}
+
+if (typeof fully !== 'undefined') {
+    fully.clearCache();
 }
 </script>
 </body>
