@@ -76,8 +76,8 @@ h3 {
 
 .widget:active { transform: scale(0.96); }
 
-.border-red { border-left: 6px solid #e74c3c; }
-.border-blue { border-left: 6px solid #00a1ff; }
+/* Standard-Zustand für Status-Farben */
+.border-red-init { border-left: 6px solid #e74c3c; } /* Roter Rahmen am Anfang */
 .heat-active { background: #cc6600; border: none; }
 
 .widget-title { font-size: 0.85rem; opacity: 0.7; margin-bottom: 3px; }
@@ -108,14 +108,19 @@ h3 {
 
     <div class="column">
         <h3>🛡️ Türschloss</h3>
-        <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/6e2c2296-db26-43b2-9749-7ad2fa0f5be9" class="widget border-red">
+        
+        <div id="btnWohnung" class="widget border-red-init" 
+             style="background-color: rgb(26, 28, 44);"
+             onclick="toggleSchloss('btnWohnung', 'valWohnung', 'linkZusperrenWohnung', 'linkAufsperrenWohnung')">
             <div class="widget-title">Wohnung</div>
-            <div class="widget-value">Zusperren 🔐</div>
-        </a>
-         <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/0166c453-8fa8-4ed8-8b75-437825f4eb25" class="widget border-red">
+            <div id="valWohnung" class="widget-value">Neutral 🔐</div>
+        </div>
+
+        <div id="btnStudio" class="widget border-red-init" 
+             style="background-color: rgb(26, 28, 44);"
+             onclick="toggleSchloss('btnStudio', 'valStudio', 'linkZusperrenStudio', 'linkAufsperrenStudio')">
             <div class="widget-title">Studio</div>
-            <div class="widget-value">Zusperren 🔐</div>
-        </a>
+            <div id="valStudio" class="widget-value">Neutral 🔐</div>
         </div>
     </div>
 
@@ -127,23 +132,28 @@ h3 {
             <div id="alexaValue" class="widget-value">AUS 🌑</div>
         </div>
 
-        <div class="widget border-red" onclick="sendeBefehl('https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d')">
+        <div class="widget" style="border-left: 6px solid #e74c3c; background-color: rgb(26, 28, 44);" 
+             onclick="sendeBefehl('https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d')">
             <div class="widget-title">Szenen</div>
             <div class="widget-value">ALLES AUS 💤</div>
-        </div>
-
-        <div class="widget border-blue" onclick="sendeBefehl('HIER_NEUEN_LINK_EINFÜGEN')">
-            <div class="widget-title">Frei</div>
-            <div class="widget-value">Bereit...</div>
         </div>
     </div>
 
 </div>
 
 <script>
-// Deine Voice Monkey Links
-const linkAn = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6";
-const linkAus = "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d";
+// Deine Voice Monkey Links (Bitte die korrekten Links eintragen!)
+const links = {
+    linkAn: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6",
+    linkAus: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d",
+    
+    // Links für die Schlösser (Hier deine echten v3-Links eintragen!)
+    linkZusperrenWohnung: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/6e2c2296-db26-43b2-9749-7ad2fa0f5be9",
+    linkAufsperrenWohnung: "HIER_LINK_AUFSPERREN_WOHNUNG_EINFÜGEN", // Nocht nicht befüllt!
+    
+    linkZusperrenStudio: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/0166c453-8fa8-4ed8-8b75-437825f4eb25",
+    linkAufsperrenStudio: "HIER_LINK_AUFSPERREN_STUDIO_EINFÜGEN" // Noch nicht befüllt!
+};
 
 // Hauptfunktion für den Couch-Licht-Umschalter
 function toggleAlexa() {
@@ -154,12 +164,37 @@ function toggleAlexa() {
         btn.style.backgroundColor = "#00a0d1"; // Alexa Blau
         btn.style.borderLeftColor = "#ffffff";
         val.innerHTML = "AN 💡";
-        sendeBefehl(linkAn);
+        sendeBefehl(links.linkAn);
     } else {
         btn.style.backgroundColor = "rgb(26, 28, 44)"; // Wieder dunkel
         btn.style.borderLeftColor = "#333";
         val.innerHTML = "AUS 🌑";
-        sendeBefehl(linkAus);
+        sendeBefehl(links.linkAus);
+    }
+}
+
+// NEU: Hauptfunktion für die Schlösser-Umschalter (Status-Farbe)
+function toggleSchloss(btnId, valId, linkZusperrenKey, linkAufsperrenKey) {
+    const btn = document.getElementById(btnId);
+    const val = document.getElementById(valId);
+    const linkZusperren = links[linkZusperrenKey];
+    const linkAufsperren = links[linkAufsperrenKey];
+
+    // Wenn er im Neutral-Zustand (dunkel) ist -> ROT (Zusperren)
+    if (btn.style.backgroundColor === "rgb(26, 28, 44)") {
+        btn.style.backgroundColor = "#e74c3c"; // Roter Hintergrund
+        btn.style.border = "none"; // Rahmen entfernen, um die Farbe wirken zu lassen
+        btn.style.borderLeft = "6px solid #c0392b"; // Dunkelroter Rand links
+        val.innerHTML = "ZUGESPERRT 🔐";
+        sendeBefehl(linkZusperren);
+    } 
+    // Wenn er rot ist -> NEUTRAL (Aufsperren)
+    else {
+        btn.style.backgroundColor = "rgb(26, 28, 44)"; // Ursprungsfarbe
+        btn.style.border = "1px solid #2d2f3b"; // Standard-Rahmen
+        btn.style.borderLeft = "6px solid #e74c3c"; // Roter Standard-Rand
+        val.innerHTML = "NEUTRAL 🔐";
+        sendeBefehl(linkAufsperren);
     }
 }
 
