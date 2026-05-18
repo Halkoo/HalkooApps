@@ -113,14 +113,14 @@ h3 {
              style="background-color: rgb(26, 28, 44);"
              onclick="toggleSchloss('btnWohnung', 'valWohnung', 'linkZusperrenWohnung', 'linkAufsperrenWohnung')">
             <div class="widget-title">Wohnung</div>
-            <div id="valWohnung" class="widget-value">Neutral 🔐</div>
+            <div id="valWohnung" class="widget-value">offen 🔓</div>
         </div>
 
         <div id="btnStudio" class="widget border-red-init" 
              style="background-color: rgb(26, 28, 44);"
              onclick="toggleSchloss('btnStudio', 'valStudio', 'linkZusperrenStudio', 'linkAufsperrenStudio')">
             <div class="widget-title">Studio</div>
-            <div id="valStudio" class="widget-value">Neutral 🔐</div>
+            <div id="valStudio" class="widget-value">offen 🔓</div>
         </div>
     </div>
 
@@ -185,7 +185,7 @@ function toggleSchloss(btnId, valId, linkZusperrenKey, linkAufsperrenKey) {
         btn.style.backgroundColor = "#e74c3c"; // Roter Hintergrund
         btn.style.border = "none"; // Rahmen entfernen, um die Farbe wirken zu lassen
         btn.style.borderLeft = "6px solid #c0392b"; // Dunkelroter Rand links
-        val.innerHTML = "ZUGESPERRT 🔐";
+        val.innerHTML = "versperrt 🔐";
         sendeBefehl(linkZusperren);
     } 
     // Wenn er rot ist -> NEUTRAL (Aufsperren)
@@ -193,7 +193,7 @@ function toggleSchloss(btnId, valId, linkZusperrenKey, linkAufsperrenKey) {
         btn.style.backgroundColor = "rgb(26, 28, 44)"; // Ursprungsfarbe
         btn.style.border = "1px solid #2d2f3b"; // Standard-Rahmen
         btn.style.borderLeft = "6px solid #e74c3c"; // Roter Standard-Rand
-        val.innerHTML = "NEUTRAL 🔐";
+        val.innerHTML = "offen 🔓";
         sendeBefehl(linkAufsperren);
     }
 }
@@ -214,3 +214,33 @@ if (typeof fully !== 'undefined') {
 </script>
 </body>
 </html>
+
+// UNIVERSYLLE FUNKTION FÜR DEINE AN/AUS-BUTTONS
+// btnId       = Die ID des Hauptbuttons (z. B. 'btnX')
+// valId       = Die ID des Textfeldes innen (z. B. 'valX')
+// linkAn      = Der Voice Monkey v3 Link fürs Einschalten
+// linkAus     = Der Voice Monkey v3 Link fürs Ausschalten
+function toggleMuster(btnId, valId, linkAn, linkAus) {
+    const btn = document.getElementById(btnId);
+    const val = document.getElementById(valId);
+    
+    // ÜBERPRÜFUNG: Ist der Button gerade im AUS-Zustand (dunkelblau)?
+    if (btn.style.backgroundColor === "rgb(26, 28, 44)") {
+        
+        // ZUSTAND: AN machen
+        btn.style.backgroundColor = "#00a0d1";     // Ändert Hintergrund zu Alexa-Blau
+        btn.style.borderLeftColor = "#ffffff";     // Ändert den linken Rand auf Weiß
+        val.innerHTML = "AN 💡";                   // Ändert den Text und das Emoji
+        
+        sendeBefehl(linkAn);                       // Schickt den AN-Befehl lautlos ab
+        
+    } else {
+        
+        // ZUSTAND: Wieder AUS machen
+        btn.style.backgroundColor = "rgb(26, 28, 44)"; // Zurück zur dunklen Hintergrundfarbe
+        btn.style.borderLeftColor = "#333";            // Zurück zum grauen Rand
+        val.innerHTML = "AUS 🌑";                      // Zurück zum AUS-Text
+        
+        sendeBefehl(linkAus);                      // Schickt den AUS-Befehl lautlos ab
+    }
+}
