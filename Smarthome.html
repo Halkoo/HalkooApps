@@ -111,16 +111,26 @@ h3 {
 
     <!-- SPALTE 2: Türen -->
     <div class="column">
-    <h3>🛡️ Wohnungstür</h3>
+    <h3>🔐Türn Versperren</h3>
     <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/6e2c2296-db26-43b2-9749-7ad2fa0f5be9" class="widget border-red">
-        <div class="widget-title">SwitchBot</div>
+        <div class="widget-title">Wohnung</div>
         <div class="widget-value">Türschloss 🔐</div>
     </a>
     <div class="widget border-blue">
         <div class="widget-title">Status</div>
         <div class="widget-value">System Aktiv</div>
-    </div>
-</div>
+ <a href="https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/0166c453-8fa8-4ed8-8b75-437825f4eb25K" 
+           target="hidden_frame" 
+           id="schlossBtn" 
+           class="widget" 
+           style="background-color: rgb(26, 28, 44); border-left: 6px solid #e74c3c;" 
+           onclick="toggleSchloss()">
+            <div class="widget-title">Studio</div>
+            <div id="schlossValue" class="widget-value">ZUGESPERRT 🔐</div>
+        </a>
+
+    <div class="column">      
+       
     <!-- SPALTE 3: ALEXA BUTTONS -->
     <div class="column">
         <h3>💡Geräte</h3>
