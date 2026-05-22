@@ -26,36 +26,46 @@
             height: 100%;
         }
 
-        #clock { font-size: 5rem; font-weight: bold; margin: 0; letter-spacing: -2px; line-height: 1; }
-        #date { font-size: 1.4rem; opacity: 0.8; margin-bottom: 2px; }
+        /* Etwas kompakter, um Platz fürs Wetter zu schaffen */
+        #clock { font-size: 4.8rem; font-weight: bold; margin: 0; letter-spacing: -2px; line-height: 0.95; }
+        #date { font-size: 1.3rem; opacity: 0.8; margin-bottom: 0px; }
 
-        /* WETTER - Wieder fest und kompakt wie gewünscht */
+        /* WETTER - Nutzt den Platz optimal aus */
         .weather-container {
-            height: 40%; /* Begrenzt die Höhe, damit es wieder kleiner ist */
+            flex-grow: 1;
             background: rgba(0,0,0,0.4);
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
         }
 
-        /* BUTTONS & PLATZ HALTER */
+        /* Vergrößert die Wetter-Anzeige (Zoom), ohne das Layout zu sprengen */
+        .weather-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform: scale(1.15); /* Vergrößert die Karte im Rahmen um 15% */
+            transform-origin: center;
+        }
+
+        /* BUTTONS */
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            flex-grow: 1; /* Sorgt dafür, dass der Bereich darunter Platz lässt */
+            gap: 10px;
         }
 
         .btn {
             display: block;
             width: 100%;
-            padding: 18px; 
+            padding: 15px; 
             border-radius: 18px;
             text-align: center;
             text-decoration: none;
             color: white;
             font-weight: bold;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             transition: transform 0.1s ease;
@@ -63,7 +73,9 @@
         
         .btn:active { transform: scale(0.97); }
 
-        .btn-plan { background-color: #6366f1; } /* Wochenplan Lila */
+        .btn-smart { background-color: #00a1ff; }   /* Geräte Steuerung Blau */
+        .btn-plan { background-color: #6366f1; }     /* Wochenplan Lila */
+        .btn-flash { background-color: #2ecc71; }    /* Flash Maker Grün */
 
         /* RECHTS: 65% Breite (Kalender) */
         .main-panel {
@@ -76,7 +88,7 @@
             height: 100%;
         }
 
-        iframe { width: 100%; height: 100%; border: none; }
+        .main-panel iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
@@ -86,11 +98,13 @@
         <div id="date">Lädt...</div>
 
         <div class="weather-container">
-            <iframe src="https://www.ventusky.com/?p=47.81;13.04;5&l=radar"></iframe>
+            <iframe src="https://www.ventusky.com/?p=47.81;13.04;6&l=radar"></iframe>
         </div>
 
         <div class="btn-group">
+            <a href="https://halkoo.github.io/HalkooApps/Smarthome.html" class="btn btn-smart">📱 GERÄTE STEUERUNG</a>
             <a href="https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html" class="btn btn-plan">🍴 WOCHENPLAN</a>
+            <a href="intent://open#Intent;scheme=flashmaker;package=com.ly.flashmaker;end" class="btn btn-flash">⚡ FLASH MAKER</a>
         </div>
     </div>
 
