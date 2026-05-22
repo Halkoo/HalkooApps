@@ -29,26 +29,27 @@
         #clock { font-size: 5rem; font-weight: bold; margin: 0; letter-spacing: -2px; line-height: 1; }
         #date { font-size: 1.4rem; opacity: 0.8; margin-bottom: 2px; }
 
-        /* WETTER - Nutzt jetzt den freien Platz optimal aus */
+        /* WETTER - Wieder fest und kompakt wie gewünscht */
         .weather-container {
-            flex-grow: 1;
+            height: 40%; /* Begrenzt die Höhe, damit es wieder kleiner ist */
             background: rgba(0,0,0,0.4);
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* BUTTONS */
+        /* BUTTONS & PLATZ HALTER */
         .btn-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            flex-grow: 1; /* Sorgt dafür, dass der Bereich darunter Platz lässt */
         }
 
         .btn {
             display: block;
             width: 100%;
-            padding: 18px; /* Etwas größer und griffiger für die Wandmontage */
+            padding: 18px; 
             border-radius: 18px;
             text-align: center;
             text-decoration: none;
