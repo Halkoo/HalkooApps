@@ -26,11 +26,10 @@
             height: 100%;
         }
 
-        /* Etwas kompakter, um Platz fürs Wetter zu schaffen */
-        #clock { font-size: 4.8rem; font-weight: bold; margin: 0; letter-spacing: -2px; line-height: 0.95; }
-        #date { font-size: 1.3rem; opacity: 0.8; margin-bottom: 0px; }
+        #clock { font-size: 5rem; font-weight: bold; margin: 0; letter-spacing: -2px; line-height: 1; }
+        #date { font-size: 1.4rem; opacity: 0.8; margin-bottom: 2px; }
 
-        /* WETTER - Nutzt den Platz optimal aus */
+        /* WETTER - Zieht sich jetzt perfekt in die Länge und wird dadurch automatisch größer */
         .weather-container {
             flex-grow: 1;
             background: rgba(0,0,0,0.4);
@@ -40,12 +39,12 @@
             position: relative;
         }
 
-        /* Vergrößert die Wetter-Anzeige (Zoom), ohne das Layout zu sprengen */
+        /* Schöner digitaler Zoom für das Galaxy Tab */
         .weather-container iframe {
             width: 100%;
             height: 100%;
             border: none;
-            transform: scale(1.15); /* Vergrößert die Karte im Rahmen um 15% */
+            transform: scale(1.15); /* Vergrößert die Details der Karte um 15% */
             transform-origin: center;
         }
 
@@ -53,19 +52,19 @@
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .btn {
             display: block;
             width: 100%;
-            padding: 15px; 
+            padding: 18px; /* Schön griffig */
             border-radius: 18px;
             text-align: center;
             text-decoration: none;
             color: white;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             text-transform: uppercase;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             transition: transform 0.1s ease;
@@ -73,9 +72,7 @@
         
         .btn:active { transform: scale(0.97); }
 
-        .btn-smart { background-color: #00a1ff; }   /* Geräte Steuerung Blau */
-        .btn-plan { background-color: #6366f1; }     /* Wochenplan Lila */
-        .btn-flash { background-color: #2ecc71; }    /* Flash Maker Grün */
+        .btn-plan { background-color: #6366f1; } /* Wochenplan Lila */
 
         /* RECHTS: 65% Breite (Kalender) */
         .main-panel {
@@ -102,9 +99,7 @@
         </div>
 
         <div class="btn-group">
-            <a href="https://halkoo.github.io/HalkooApps/Smarthome.html" class="btn btn-smart">📱 GERÄTE STEUERUNG</a>
             <a href="https://halkoo.github.io/HalkooApps/Wochenspeiseplan.html" class="btn btn-plan">🍴 WOCHENPLAN</a>
-            <a href="intent://open#Intent;scheme=flashmaker;package=com.ly.flashmaker;end" class="btn btn-flash">⚡ FLASH MAKER</a>
         </div>
     </div>
 
