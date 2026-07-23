@@ -72,7 +72,7 @@
         .btn:active { transform: scale(0.97); }
         .btn-plan { background-color: #6366f1; } /* Wochenplan Lila */
 
-        /* RECHTS: 65% Breite (Echte Kalender App eingebettet) */
+        /* RECHTS: 65% Breite (Google Kalender) */
         .main-panel {
             width: 65%;
             margin-left: 20px;
@@ -102,8 +102,7 @@
     </div>
 
     <div class="main-panel">
-        <!-- Lädt die originale Google Kalender App direkt auf das Dashboard -->
-        <iframe src="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" 
+        <iframe src="https://calendar.google.com/calendar/embed?src=nomabi3312%40gmail.com&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showPrint=0&showTabs=1&showCalendars=0&showTz=0" 
                 scrolling="no">
         </iframe>
     </div>
