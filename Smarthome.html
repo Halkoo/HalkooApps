@@ -1,224 +1,164 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Geräte Steuerung</title>
-<style>
-* { box-sizing: border-box; }
-body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: #000000;
-    color: white;
-    margin: 0;
-    padding: 20px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.back-btn {
-    padding: 12px 25px;
-    background-color: #1a1c2c;
-    color: white;
-    text-decoration: none;
-    border-radius: 12px;
-    font-weight: bold;
-    border: 1px solid #333;
-}
-
-h1 { margin: 0; font-size: 1.8rem; color: #ffffff; }
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.3fr;
-    gap: 20px;
-    flex-grow: 1;
-    height: calc(100% - 80px);
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-h3 {
-    font-size: 0.9rem;
-    color: #7f8c8d;
-    margin: 0 0 5px 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.widget {
-    background: #1a1c2c;
-    border-radius: 15px;
-    padding: 15px 20px;
-    border: 1px solid #2d2f3b;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-decoration: none;
-    color: white;
-    cursor: pointer;
-    min-height: 90px; 
-    transition: all 0.2s ease;
-}
-
-.widget:active { transform: scale(0.96); }
-
-/* Standard-Zustand für Status-Farben */
-.border-red-init { border-left: 6px solid #e74c3c; } /* Roter Rahmen am Anfang */
-.heat-active { background: #cc6600; border: none; }
-
-.widget-title { font-size: 0.85rem; opacity: 0.7; margin-bottom: 3px; }
-.widget-value { font-size: 1.3rem; font-weight: bold; }
-</style>
+  <meta charset="UTF-8">
+  <title>Klassisches ADS-B Radar</title>
+  <style>
+    body {
+      background-color: #050b05;
+      color: #00ff66;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #radarCanvas {
+      background-color: #001100;
+      border: 3px solid #00ff66;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+    }
+    .info {
+      margin-top: 15px;
+      font-size: 14px;
+      text-shadow: 0 0 5px #00ff66;
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-    <a href="dashboard.html" class="back-btn">← DASHBOARD</a>
-    <h1>Geräte Steuerung</h1>
-    <div style="width: 120px;"></div>
-</div>
+  <h2>ATC RADAR SCOPE</h2>
+  <canvas id="radarCanvas" width="600" height="600"></canvas>
+  <div class="info" id="status">Lade Flugzeugdaten...</div>
 
-<div class="dashboard-grid">
+  <script>
+    const canvas = document.getElementById('radarCanvas');
+    const ctx = canvas.getContext('2d');
+    const statusDiv = document.getElementById('status');
 
-    <div class="column">
-        <h3>🌡️ Heizung</h3>
-        <a href="intent://open#Intent;scheme=calorbt;package=com.eurotronic.calorbt;end" class="widget heat-active">
-            <div class="widget-title">Wohnzimmer</div>
-            <div class="widget-value">21.0°C</div>
-        </a>
-        <div class="widget">
-            <div class="widget-title">Küche</div>
-            <div class="widget-value">20.5°C</div>
-        </div>
-    </div>
+    // DEINE POSITION (Breiten- und Längengrad eintragen)
+    const MY_LAT = 48.2082; // Beispiel: Wien (anpassen!)
+    const MY_LON = 16.3738;
+    const MAX_RANGE_KM = 100; // Radius des Schirms in Kilometern
 
-    <div class="column">
-        <h3>🛡️ Türschloss</h3>
-        
-        <div id="btnWohnung" class="widget border-red-init" 
-             style="background-color: rgb(26, 28, 44);"
-             onclick="toggleSchloss('btnWohnung', 'valWohnung', 'linkZusperrenWohnung', 'linkAufsperrenWohnung')">
-            <div class="widget-title">Wohnung</div>
-            <div id="valWohnung" class="widget-value">offen 🔓</div>
-        </div>
+    const CENTER_X = canvas.width / 2;
+    const CENTER_Y = canvas.height / 2;
+    const RADIUS = canvas.width / 2 - 10;
 
-        <div id="btnStudio" class="widget border-red-init" 
-             style="background-color: rgb(26, 28, 44);"
-             onclick="toggleSchloss('btnStudio', 'valStudio', 'linkZusperrenStudio', 'linkAufsperrenStudio')">
-            <div class="widget-title">Studio</div>
-            <div id="valStudio" class="widget-value">offen 🔓</div>
-        </div>
-    </div>
-<a href="intent://open#Intent;scheme=flashmaker;package=com.ly.flashmaker;end" class="widget border-green">
-    <div class="widget-title">3D Drucker</div>
-    <div class="widget-value">3D Drucker⚡</div>
-</a>
-    <div class="column">
-        <h3>🎙️ Alexa Befehle</h3>
-        
-        <div id="alexaBtn" class="widget" style="background-color: rgb(26, 28, 44); border-left: 6px solid #333;" onclick="toggleAlexa()">
-            <div class="widget-title">Couch Licht</div>
-            <div id="alexaValue" class="widget-value">AUS 🌑</div>
-        </div>
+    let sweepAngle = 0;
+    let aircraftList = [];
 
-        <div class="widget" style="border-left: 6px solid #e74c3c; background-color: rgb(26, 28, 44);" 
-             onclick="sendeBefehl('https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d')">
-            <div class="widget-title">Szenen</div>
-            <div class="widget-value">ALLES AUS 💤</div>
-        </div>
-    </div>
+    // 1. Hintergrund & Radar-Ringe zeichnen
+    function drawRadarScope() {
+      ctx.fillStyle = 'rgba(0, 17, 0, 0.15)'; // Leichtes Nachleuchten (Fade-Effekt)
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-</div>
+      // Äußerer Kreis & Fadenkreuz
+      ctx.strokeStyle = '#006622';
+      ctx.lineWidth = 1;
 
-<script>
-// Deine Voice Monkey Links (Bitte die korrekten Links eintragen!)
-const links = {
-    linkAn: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/77c83699-b42d-4ec2-9539-c8c2b3e944a6",
-    linkAus: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/3fcc3293-9c2f-4fa5-8d23-56aaeda7e21d",
-    
-    // Links für die Schlösser (Hier deine echten v3-Links eintragen!)
-    linkZusperrenWohnung: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/6e2c2296-db26-43b2-9749-7ad2fa0f5be9",
-    linkAufsperrenWohnung: "HIER_LINK_AUFSPERREN_WOHNUNG_EINFÜGEN", // Nocht nicht befüllt!
-    
-    linkZusperrenStudio: "https://api-v3.voicemonkey.io/catch/b1c56071051c6f6c10e389e448068809/0166c453-8fa8-4ed8-8b75-437825f4eb25",
-    linkAufsperrenStudio: "HIER_LINK_AUFSPERREN_STUDIO_EINFÜGEN" // Noch nicht befüllt!
-};
+      for (let r = 1; r <= 4; r++) {
+        ctx.beginPath();
+        ctx.arc(CENTER_X, CENTER_Y, (RADIUS / 4) * r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
 
-// Hauptfunktion für den Couch-Licht-Umschalter
-function toggleAlexa() {
-    const btn = document.getElementById("alexaBtn");
-    const val = document.getElementById("alexaValue");
-    
-    if (btn.style.backgroundColor === "rgb(26, 28, 44)") {
-        btn.style.backgroundColor = "#00a0d1"; // Alexa Blau
-        btn.style.borderLeftColor = "#ffffff";
-        val.innerHTML = "AN 💡";
-        sendeBefehl(links.linkAn);
-    } else {
-        btn.style.backgroundColor = "rgb(26, 28, 44)"; // Wieder dunkel
-        btn.style.borderLeftColor = "#333";
-        val.innerHTML = "AUS 🌑";
-        sendeBefehl(links.linkAus);
+      // Fadenkreuz
+      ctx.beginPath();
+      ctx.moveTo(CENTER_X, CENTER_Y - RADIUS);
+      ctx.lineTo(CENTER_X, CENTER_Y + RADIUS);
+      ctx.moveTo(CENTER_X - RADIUS, CENTER_Y);
+      ctx.lineTo(CENTER_X + RADIUS, CENTER_Y);
+      ctx.stroke();
     }
-}
 
-// NEU: Hauptfunktion für die Schlösser-Umschalter (Status-Farbe)
-function toggleSchloss(btnId, valId, linkZusperrenKey, linkAufsperrenKey) {
-    const btn = document.getElementById(btnId);
-    const val = document.getElementById(valId);
-    const linkZusperren = links[linkZusperrenKey];
-    const linkAufsperren = links[linkAufsperrenKey];
+    // 2. Rotierenden Strahl zeichnen
+    function drawSweep() {
+      sweepAngle += 0.03;
+      if (sweepAngle >= Math.PI * 2) sweepAngle = 0;
 
-    // Wenn er im Neutral-Zustand (dunkel) ist -> ROT (Zusperren)
-    if (btn.style.backgroundColor === "rgb(26, 28, 44)") {
-        btn.style.backgroundColor = "#e74c3c"; // Roter Hintergrund
-        btn.style.border = "none"; // Rahmen entfernen, um die Farbe wirken zu lassen
-        btn.style.borderLeft = "6px solid #c0392b"; // Dunkelroter Rand links
-        val.innerHTML = "versperrt 🔐";
-        sendeBefehl(linkZusperren);
-    } 
-    // Wenn er rot ist -> NEUTRAL (Aufsperren)
-    else {
-        btn.style.backgroundColor = "rgb(26, 28, 44)"; // Ursprungsfarbe
-        btn.style.border = "1px solid #2d2f3b"; // Standard-Rahmen
-        btn.style.borderLeft = "6px solid #e74c3c"; // Roter Standard-Rand
-        val.innerHTML = "offen 🔓";
-        sendeBefehl(linkAufsperren);
+      ctx.save();
+      ctx.translate(CENTER_X, CENTER_Y);
+      ctx.rotate(sweepAngle);
+
+      // Radarstrahl mit Farbverlauf
+      let gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, RADIUS);
+      gradient.addColorStop(0, 'rgba(0, 255, 102, 0.8)');
+      gradient.addColorStop(1, 'rgba(0, 255, 102, 0.1)');
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, RADIUS, -0.2, 0); // Fächer
+      ctx.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.restore();
     }
-}
 
-// Der "Hintergrund-Sender", der die v3-Sperre umgeht
-function sendeBefehl(zielUrl) {
-    if(!zielUrl || zielUrl.startsWith('HIER')) return;
-    
-    fetch(zielUrl, {
-        method: 'POST',
-        mode: 'no-cors' // Zwingt den Browser das Signal ohne Meckern zu senden
-    }).catch(err => console.log("Fehler abgefangen"));
-}
+    // 3. Umrechnung von GPS-Koordinaten auf Bildschirmpixel
+    function gpsToRadar(lat, lon) {
+      const dLat = (lat - MY_LAT) * 111.13; // ca. 111 km pro Breitengrad
+      const dLon = (lon - MY_LON) * (111.13 * Math.cos(MY_LAT * Math.PI / 180));
 
-if (typeof fully !== 'undefined') {
-    fully.clearCache();
-}
-</script>
-   
+      const x = CENTER_X + (dLon / MAX_RANGE_KM) * RADIUS;
+      const y = CENTER_Y - (dLat / MAX_RANGE_KM) * RADIUS; // Y ist auf Canvas umgekehrt
+      return { x, y };
+    }
+
+    // 4. Flugzeuge als grüne Punkte & Text zeichnen
+    function drawAircraft() {
+      aircraftList.forEach(ac => {
+        if (!ac.lat || !ac.lon) return;
+
+        const pos = gpsToRadar(ac.lat, ac.lon);
+
+        // Prüfen, ob das Flugzeug innerhalb des Schirms liegt
+        const dist = Math.hypot(pos.x - CENTER_X, pos.y - CENTER_Y);
+        if (dist <= RADIUS) {
+          // Blip (Punkt)
+          ctx.fillStyle = '#00ff66';
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Flugnummer & Höhe (in Fuß) als Text
+          ctx.fillStyle = '#00ff66';
+          ctx.font = '10px Courier New';
+          const label = (ac.flight || ac.hex).trim();
+          const alt = ac.alt_baro ? `${ac.alt_baro}ft` : '';
+          ctx.fillText(`${label}`, pos.x + 8, pos.y);
+          ctx.fillText(`${alt}`, pos.x + 8, pos.y + 10);
+        }
+      });
+    }
+
+    // 5. Daten vom ADS-B Empfänger laden (z.B. dump1090)
+    async function fetchADSBData() {
+      try {
+        // Ersetze die URL mit deiner dump1090 IP-Adresse (z. B. http://192.168.1.50/dump1090/data/aircraft.json)
+        const response = await fetch('http://localhost:8080/data/aircraft.json');
+        const data = await response.json();
+        aircraftList = data.aircraft || [];
+        statusDiv.innerText = `Empfange Signale | Flugzeuge in Reichweite: ${aircraftList.length}`;
+      } catch (err) {
+        statusDiv.innerText = "Warte auf ADS-B Datenquelle...";
+      }
+    }
+
+    // Main Loop
+    function loop() {
+      drawRadarScope();
+      drawSweep();
+      drawAircraft();
+      requestAnimationFrame(loop);
+    }
+
+    // Alle 2 Sekunden Daten aktualisieren
+    setInterval(fetchADSBData, 2000);
+    loop();
+  </script>
 </body>
 </html>
-
-
-
-     
