@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klassisches ADS-B Radar (SIMULATION)</title>
+  <title>Klassisches ADS-B Radar mit Kartenmaterial</title>
   <style>
     body {
-      background-color: #050b05; /* Sehr dunkles Grün */
-      color: #00ff66; /* Leuchtend grüner Text */
+      background-color: #050b05;
+      color: #00ff66;
       font-family: 'Courier New', Courier, monospace;
       display: flex;
       flex-direction: column;
@@ -15,7 +15,7 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      overflow: hidden; /* Verhindert Scrollbalken */
+      overflow: hidden;
     }
     h2 {
       margin-bottom: 10px;
@@ -23,7 +23,7 @@
       letter-spacing: 2px;
     }
     #radarCanvas {
-      background-color: #001100; /* Dunkelgrüner Schirm */
+      background-color: #001100;
       border: 4px solid #00ff66;
       border-radius: 50%;
       box-shadow: 0 0 30px rgba(0, 255, 102, 0.5);
@@ -40,73 +40,118 @@
 </head>
 <body>
 
-  <h2>ATC RADAR SCOPE</h2>
+  <h2>ATC RADAR WITH MAP OVERLAY</h2>
   <canvas id="radarCanvas" width="650" height="650"></canvas>
-  <div class="info" id="status">Simulation läuft (Demo-Modus)...</div>
+  <div class="info" id="status">Radar mit Grenzen & Flüssen aktiv</div>
 
   <script>
     const canvas = document.getElementById('radarCanvas');
     const ctx = canvas.getContext('2d');
-    const statusDiv = document.getElementById('status');
 
     const CENTER_X = canvas.width / 2;
     const CENTER_Y = canvas.height / 2;
     const RADIUS = (canvas.width / 2) - 15;
 
+    // --- DEIN STANDORT ---
+    // Hier kannst du genau deine GPS-Koordinaten eintragen:
+    const MY_LAT = 47.35; // Breitengrad
+    const MY_LON = 13.20; // Längengrad
+    const RADAR_RANGE_KM = 80; // Sichtweite im Radar-Radius in km
+
     let sweepAngle = 0;
-    let aircraftList = [];
-    const NUM_SIM_AIRCRAFT = 6; // Anzahl der gefakten Flugzeuge
 
-    // --- INITIALISIERUNG DER SIMULATIONS-DATEN ---
+    // --- GEODATEN (GRENZEN UND FLÜSSE ALIAS KOORDINATEN-KETTEN) ---
+    
+    // Beispiel-Grenzverläufe (Punkte als [Lat, Lon])
+    const BORDERS = [
+      // Eine Beispiel-Landesgrenze
+      [ [47.8, 12.8], [47.6, 13.0], [47.4, 13.1], [47.1, 12.9], [47.0, 12.5] ],
+      // Eine Bezirks-/Bundeslandgrenze
+      [ [47.5, 13.5], [47.3, 13.3], [47.2, 13.1], [47.0, 13.0] ]
+    ];
 
-    // Wir erstellen künstliche Flugzeuge mit Startpositionen und Geschwindigkeiten
-    function initSimulation() {
-      const callsigns = ["DLH123", "AFR456", "BAW789", "RYR101", "KLM202", "UAE303"];
-      aircraftList = [];
-      for (let i = 0; i < NUM_SIM_AIRCRAFT; i++) {
-        // Position relativ zum Zentrum (in Pixeln, nicht GPS-Grad)
-        const angle = Math.random() * Math.PI * 2;
-        const dist = Math.random() * RADIUS * 0.8; 
-        
-        aircraftList.push({
-          id: callsigns[i] || `SIM${i+1}`,
-          xRel: Math.cos(angle) * dist,
-          yRel: Math.sin(angle) * dist,
-          alt: Math.floor(Math.random() * 300) * 100 + 5000, // Höhe zw. 5000 und 35000 ft
-          vx: (Math.random() - 0.5) * 0.4, // Geschwindigkeit in X
-          vy: (Math.random() - 0.5) * 0.4  // Geschwindigkeit in Y
-        });
-      }
+    // Beispiel-Flüsse (Punkte als [Lat, Lon])
+    const RIVERS = [
+      // Ein Flusslauf
+      [ [47.1, 13.1], [47.25, 13.18], [47.35, 13.20], [47.5, 13.05], [47.8, 13.0] ]
+    ];
+
+    // --- GPS IN RADAR-PIXEL UMRECHNEN ---
+    function gpsToRadarPixel(lat, lon) {
+      const dLat = (lat - MY_LAT) * 111.13; // ca. 111 km pro Breitengrad
+      const dLon = (lon - MY_LON) * (111.13 * Math.cos(MY_LAT * Math.PI / 180));
+
+      const x = CENTER_X + (dLon / RADAR_RANGE_KM) * RADIUS;
+      const y = CENTER_Y - (dLat / RADAR_RANGE_KM) * RADIUS; // Y auf Canvas umgekehrt
+      return { x, y };
     }
 
-    // --- ZEICHNEN DES RADARS ---
+    // --- KARTENMATERIAL ZEICHNEN (GRENZEN & FLÜSSE) ---
+    function drawMapOverlays() {
+      // 1. GRENZEN ZEICHNEN (Gepunktet/Gestrichelt in Dunkelgrün)
+      ctx.strokeStyle = 'rgba(0, 255, 102, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]); // Gestrichelte Linie für Grenzen
 
-    // 1. Hintergrund & Radar-Ringe (wird jede Frame neu gezeichnet)
+      BORDERS.forEach(borderLine => {
+        ctx.beginPath();
+        borderLine.forEach((pt, index) => {
+          const pos = gpsToRadarPixel(pt[0], pt[1]);
+          if (index === 0) ctx.moveTo(pos.x, pos.y);
+          else ctx.lineTo(pos.x, pos.y);
+        });
+        ctx.stroke();
+      });
+
+      // 2. FLÜSSE ZEICHNEN (Durchgezogen in leicht bläulichem/hellerem Grün)
+      ctx.strokeStyle = 'rgba(0, 255, 180, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]); // Durchgezogene Linie
+
+      RIVERS.forEach(riverLine => {
+        ctx.beginPath();
+        riverLine.forEach((pt, index) => {
+          const pos = gpsToRadarPixel(pt[0], pt[1]);
+          if (index === 0) ctx.moveTo(pos.x, pos.y);
+          else ctx.lineTo(pos.x, pos.y);
+        });
+        ctx.stroke();
+      });
+
+      // Zurücksetzen der Linien-Formate
+      ctx.setLineDash([]);
+    }
+
+    // --- RADAR RASTER & SCHIRM ---
     function drawRadarScope() {
-      // WICHTIG: Das leichte 'rgba(..., 0.15)' sorgt für das Nachleuchten der Flieger (Fade-out)!
       ctx.fillStyle = 'rgba(0, 17, 0, 0.15)'; 
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Statische Gitterringe (stärker)
       ctx.strokeStyle = '#004411';
       ctx.lineWidth = 1;
 
-      // Die 4 Entfernungsringe
+      // Abstandsringe (z.B. 20km, 40km, 60km, 80km)
       for (let r = 1; r <= 4; r++) {
         ctx.beginPath();
         ctx.arc(CENTER_X, CENTER_Y, (RADIUS / 4) * r, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // Zentrales Fadenkreuz
+      // Fadenkreuz
       ctx.beginPath();
       ctx.moveTo(CENTER_X, CENTER_Y - RADIUS);
       ctx.lineTo(CENTER_X, CENTER_Y + RADIUS);
       ctx.moveTo(CENTER_X - RADIUS, CENTER_Y);
       ctx.lineTo(CENTER_X + RADIUS, CENTER_Y);
       ctx.stroke();
-      
-      // Äußerer, dickerer Rand
+
+      // Eigenes Zentrum (Heimatort) markieren
+      ctx.fillStyle = '#00ff66';
+      ctx.beginPath();
+      ctx.arc(CENTER_X, CENTER_Y, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Rand
       ctx.strokeStyle = '#00ff66';
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -114,9 +159,8 @@
       ctx.stroke();
     }
 
-    // 2. Rotierenden Strahl zeichnen
+    // --- DREHENDER RADARSTRAHL ---
     function drawSweep() {
-      // Rotationsgeschwindigkeit
       sweepAngle += 0.025;
       if (sweepAngle >= Math.PI * 2) sweepAngle = 0;
 
@@ -124,15 +168,12 @@
       ctx.translate(CENTER_X, CENTER_Y);
       ctx.rotate(sweepAngle);
 
-      // Radarstrahl mit starkem Farbverlauf (leuchtender Fächer)
       let gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, RADIUS);
-      gradient.addColorStop(0, 'rgba(0, 255, 102, 0.9)');
-      gradient.addColorStop(0.1, 'rgba(0, 255, 102, 0.6)');
-      gradient.addColorStop(1, 'rgba(0, 255, 102, 0.05)');
+      gradient.addColorStop(0, 'rgba(0, 255, 102, 0.8)');
+      gradient.addColorStop(1, 'rgba(0, 255, 102, 0.02)');
 
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      // Der Winkel des Fächers (0.3 Radians)
       ctx.arc(0, 0, RADIUS, -0.3, 0); 
       ctx.closePath();
       ctx.fillStyle = gradient;
@@ -140,86 +181,16 @@
       ctx.restore();
     }
 
-    // 3. Simulations-Flugzeuge aktualisieren & zeichnen
-    function drawSimulationAircraft() {
-      aircraftList.forEach(ac => {
-        // A) Bewegung aktualisieren
-        ac.xRel += ac.vx;
-        ac.yRel += ac.vy;
-
-        // B) Kollision mit dem Rand (Abprallen)
-        const dist = Math.hypot(ac.xRel, ac.yRel);
-        if (dist > RADIUS * 0.95) {
-          // Normalenvektor zur Kollision berechnen und Geschwindigkeit umkehren
-          const nx = ac.xRel / dist;
-          const ny = ac.yRel / dist;
-          const dot = ac.vx * nx + ac.vy * ny;
-          ac.vx -= 2 * dot * nx;
-          ac.vy -= 2 * dot * ny;
-          // Position leicht korrigieren, um Feststecken zu verhindern
-          ac.xRel = nx * (RADIUS * 0.94);
-          ac.yRel = ny * (RADIUS * 0.94);
-        }
-
-        // C) Zeichnen auf dem Canvas
-        const posX = CENTER_X + ac.xRel;
-        const posY = CENTER_Y + ac.yRel;
-
-        // Blip (Hellgrüner Punkt)
-        ctx.fillStyle = '#ccffdd'; // Etwas heller als der Strahl
-        ctx.beginPath();
-        ctx.arc(posX, posY, 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Leuchteffekt um den Punkt
-        ctx.shadowColor = '#00ff66';
-        ctx.shadowBlur = 10;
-        ctx.stroke();
-        ctx.shadowBlur = 0; // Zurücksetzen
-
-        // D) Text-Datenblock (Callsign & Höhe in ft)
-        ctx.fillStyle = '#00ff66';
-        ctx.font = 'bold 11px "Courier New", monospace';
-        
-        const altStr = `${Math.floor(ac.alt)}ft`;
-        const speed = Math.round(Math.hypot(ac.vx, ac.vy) * 1000); // Fiktive Speed
-        const speedStr = `${speed}kts`;
-
-        // Textposition (versetzt zum Punkt)
-        ctx.fillText(ac.id, posX + 10, posY - 2);
-        ctx.font = '10px "Courier New", monospace';
-        ctx.fillText(altStr, posX + 10, posY + 10);
-        // ctx.fillText(speedStr, posX + 10, posY + 20); // Optional: Speed
-      });
-    }
-
-    // --- MAIN ANIMATION LOOP ---
-
+    // --- MAIN LOOP ---
     function mainLoop() {
-      // 1. Gitter und Nachleucht-Effekt zeichnen
       drawRadarScope();
-      
-      // 2. Flugzeuge simulieren, bewegen und zeichnen
-      drawSimulationAircraft();
-      
-      // 3. Den rotierenden Strahl ganz oben drüber legen
+      drawMapOverlays(); // Kartenmaterial auf den Radar-Schirm zeichnen
       drawSweep();
       
-      // Fordert den Browser auf, das nächste Frame zu zeichnen
       requestAnimationFrame(mainLoop);
     }
 
-    // --- START ---
-
-    // 1. Flugzeuge erzeugen
-    initSimulation();
-    
-    // 2. Animations-Loop starten
     mainLoop();
-    
-    // Status-Update (für die Optik)
-    statusDiv.innerText = `SIMULATION AKTIV | ${NUM_SIM_AIRCRAFT} Test-Ziele`;
-
   </script>
 </body>
 </html>
