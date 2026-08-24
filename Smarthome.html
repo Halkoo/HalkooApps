@@ -423,7 +423,7 @@
             resultsBox.innerHTML = '<div style="padding:10px;">Suche...</div>';
 
             try {
-                const res = await fetch(`https://de.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=5`);
+                const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=5`);
                 const data = await res.json();
                 resultsBox.innerHTML = '';
                 if (data.products && data.products.length > 0) {
@@ -441,14 +441,26 @@
             resultsBox.style.display = 'block';
             resultsBox.innerHTML = '<div style="padding:10px;">Barcode wird abgerufen...</div>';
 
-            fetch(`https://de.openfoodfacts.org/api/v0/product/${barcode}.json`)
+            const cleanBarcode = barcode.trim();
+            
+            fetch(`https://world.openfoodfacts.org/api/v2/product/${cleanBarcode}.json`)
                 .then(res => res.json())
                 .then(data => {
-                    resultsBox.innerHTML = '';
-                    if (data.status === 1) {
+                    if (data.status === 1 && data.product && data.product.nutriments) {
+                        resultsBox.innerHTML = '';
                         renderSearchResultItem(data.product);
                     } else {
-                        resultsBox.innerHTML = '<div style="padding:10px;">Produkt nicht in Datenbank gefunden.</div>';
+                        const altBarcode = cleanBarcode.replace(/^0+/, '');
+                        return fetch(`https://world.openfoodfacts.org/api/v2/product/${altBarcode}.json`)
+                            .then(res => res.json())
+                            .then(altData => {
+                                resultsBox.innerHTML = '';
+                                if (altData.status === 1 && altData.product && altData.product.nutriments) {
+                                    renderSearchResultItem(altData.product);
+                                } else {
+                                    resultsBox.innerHTML = `<div style="padding:10px; color: var(--accent-red);">Produkt (${cleanBarcode}) nicht gefunden.</div>`;
+                                }
+                            });
                     }
                 })
                 .catch(() => {
@@ -460,10 +472,10 @@
             const resultsBox = document.getElementById('search-results');
             const n = p.nutriments || {};
             const name = p.product_name || 'Unbenannt';
-            const kcal = Math.round(n['energy-kcal_100g'] || 0);
-            const protein = Math.round(n.proteins_100g || 0);
-            const carbs = Math.round(n.carbohydrates_100g || 0);
-            const fat = Math.round(n.fat_100g || 0);
+            const kcal = Math.round(n['energy-kcal_100g'] || n['energy-kcal'] || 0);
+            const protein = Math.round(n.proteins_100g || n.proteins || 0);
+            const carbs = Math.round(n.carbohydrates_100g || n.carbohydrates || 0);
+            const fat = Math.round(n.fat_100g || n.fat || 0);
 
             const div = document.createElement('div');
             div.className = 'search-item';
@@ -499,7 +511,7 @@
                             readerDiv.style.display = 'none';
                         });
                     },
-                    (errorMessage) => { /* ignoriere Scan-Fehler bis Treffer */ }
+                    (errorMessage) => { }
                 ).catch(err => {
                     alert('Kamera-Zugriff nicht möglich oder verweigert.');
                     readerDiv.style.display = 'none';
