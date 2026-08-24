@@ -1,196 +1,881 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klassisches ADS-B Radar mit Kartenmaterial</title>
-  <style>
-    body {
-      background-color: #050b05;
-      color: #00ff66;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
-    h2 {
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px #00ff66;
-      letter-spacing: 2px;
-    }
-    #radarCanvas {
-      background-color: #001100;
-      border: 4px solid #00ff66;
-      border-radius: 50%;
-      box-shadow: 0 0 30px rgba(0, 255, 102, 0.5);
-    }
-    .info {
-      margin-top: 15px;
-      font-size: 14px;
-      text-shadow: 0 0 5px #00ff66;
-      background: rgba(0, 20, 0, 0.8);
-      padding: 5px 15px;
-      border-radius: 5px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro & Calorie Tracker</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .date-picker {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .fill-calories { background-color: var(--accent-green); }
+        .fill-protein { background-color: var(--accent-blue); }
+        .fill-carbs { background-color: var(--accent-amber); }
+        .fill-fat { background-color: var(--accent-red); }
+
+        .section-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], input[type="number"] {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        button {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-add { background: var(--accent-green); }
+
+        .search-results {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .search-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .goals-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .goals-section input {
+            width: 80px;
+            padding: 4px 8px;
+        }
+    </style>
 </head>
 <body>
 
-  <h2>ATC RADAR WITH MAP OVERLAY</h2>
-  <canvas id="radarCanvas" width="650" height="650"></canvas>
-  <div class="info" id="status">Radar mit Grenzen & Flüssen aktiv</div>
+    <div class="header">
+        <div>
+            <h2>MacroTracker</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Kostenloser Yazio-Style Tracker</p>
+        </div>
+        <input type="date" id="track-date" class="date-picker">
+    </div>
 
-  <script>
-    const canvas = document.getElementById('radarCanvas');
-    const ctx = canvas.getContext('2d');
+    <div class="dashboard">
+        <div class="card">
+            <div class="card-title">Kalorien</div>
+            <div class="card-value"><span id="curr-kcal">0</span> / <span id="target-kcal">2000</span> <small>kcal</small></div>
+            <div class="progress-bar"><div id="prog-kcal" class="progress-fill fill-calories" style="width: 0%;"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Protein</div>
+            <div class="card-value"><span id="curr-protein">0</span> / <span id="target-protein">150</span> <small>g</small></div>
+            <div class="progress-bar"><div id="prog-protein" class="progress-fill fill-protein" style="width: 0%;"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Kohlenhydrate</div>
+            <div class="card-value"><span id="curr-carbs">0</span> / <span id="target-carbs">200</span> <small>g</small></div>
+            <div class="progress-bar"><div id="prog-carbs" class="progress-fill fill-carbs" style="width: 0%;"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Fett</div>
+            <div class="card-value"><span id="curr-fat">0</span> / <span id="target-fat">65</span> <small>g</small></div>
+            <div class="progress-bar"><div id="prog-fat" class="progress-fill fill-fat" style="width: 0%;"></div></div>
+        </div>
+    </div>
 
-    const CENTER_X = canvas.width / 2;
-    const CENTER_Y = canvas.height / 2;
-    const RADIUS = (canvas.width / 2) - 15;
+    <div class="section-box">
+        <h3 style="margin-bottom: 10px;">Lebensmittel hinzufügen</h3>
+        <div class="search-container">
+            <input type="text" id="api-search-input" placeholder="Online suchen (z. B. Protein Wrap)...">
+            <button onclick="searchOpenFoodFacts()">Suchen</button>
+        </div>
+        <div id="search-results" class="search-results"></div>
 
-    // --- DEIN STANDORT ---
-    // Hier kannst du genau deine GPS-Koordinaten eintragen:
-    const MY_LAT = 47.35; // Breitengrad
-    const MY_LON = 13.20; // Längengrad
-    const RADAR_RANGE_KM = 80; // Sichtweite im Radar-Radius in km
+        <div class="grid-inputs">
+            <input type="text" id="input-name" placeholder="Name">
+            <input type="number" id="input-kcal" placeholder="Kcal">
+            <input type="number" id="input-protein" placeholder="Protein (g)">
+            <input type="number" id="input-carbs" placeholder="Carbs (g)">
+            <input type="number" id="input-fat" placeholder="Fett (g)">
+        </div>
+        <button class="btn-add" onclick="addCustomFood()" style="width: 100%;">Eintrag speichern</button>
+    </div>
 
-    let sweepAngle = 0;
+    <div class="section-box">
+        <h3 style="margin-bottom: 10px;">Tagesprotokoll</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lebensmittel</th>
+                        <th>Kcal</th>
+                        <th>Protein</th>
+                        <th>Carbs</th>
+                        <th>Fett</th>
+                        <th>Aktion</th>
+                    </tr>
+                </thead>
+                <tbody id="log-table-body"></tbody>
+            </table>
+        </div>
+    </div>
 
-    // --- GEODATEN (GRENZEN UND FLÜSSE ALIAS KOORDINATEN-KETTEN) ---
-    
-    // Beispiel-Grenzverläufe (Punkte als [Lat, Lon])
-    const BORDERS = [
-      // Eine Beispiel-Landesgrenze
-      [ [47.8, 12.8], [47.6, 13.0], [47.4, 13.1], [47.1, 12.9], [47.0, 12.5] ],
-      // Eine Bezirks-/Bundeslandgrenze
-      [ [47.5, 13.5], [47.3, 13.3], [47.2, 13.1], [47.0, 13.0] ]
-    ];
+    <div class="section-box">
+        <h3 style="margin-bottom: 10px;">Tagesziele anpassen</h3>
+        <div class="goals-section">
+            <label>Kcal: <input type="number" id="goal-kcal-input" value="2000"></label>
+            <label>Protein: <input type="number" id="goal-protein-input" value="150"></label>
+            <label>Carbs: <input type="number" id="goal-carbs-input" value="200"></label>
+            <label>Fett: <input type="number" id="goal-fat-input" value="65"></label>
+            <button onclick="updateGoals()">Speichern</button>
+        </div>
+    </div>
 
-    // Beispiel-Flüsse (Punkte als [Lat, Lon])
-    const RIVERS = [
-      // Ein Flusslauf
-      [ [47.1, 13.1], [47.25, 13.18], [47.35, 13.20], [47.5, 13.05], [47.8, 13.0] ]
-    ];
+    <script>
+        let targets = { kcal: 2000, protein: 150, carbs: 200, fat: 65 };
+        const currentDateInput = document.getElementById('track-date');
+        currentDateInput.valueAsDate = new Date();
 
-    // --- GPS IN RADAR-PIXEL UMRECHNEN ---
-    function gpsToRadarPixel(lat, lon) {
-      const dLat = (lat - MY_LAT) * 111.13; // ca. 111 km pro Breitengrad
-      const dLon = (lon - MY_LON) * (111.13 * Math.cos(MY_LAT * Math.PI / 180));
+        window.onload = function() {
+            loadGoals();
+            loadLog();
+            currentDateInput.addEventListener('change', loadLog);
+        };
 
-      const x = CENTER_X + (dLon / RADAR_RANGE_KM) * RADIUS;
-      const y = CENTER_Y - (dLat / RADAR_RANGE_KM) * RADIUS; // Y auf Canvas umgekehrt
-      return { x, y };
-    }
+        function getStorageKey() { return `macro_log_${currentDateInput.value}`; }
 
-    // --- KARTENMATERIAL ZEICHNEN (GRENZEN & FLÜSSE) ---
-    function drawMapOverlays() {
-      // 1. GRENZEN ZEICHNEN (Gepunktet/Gestrichelt in Dunkelgrün)
-      ctx.strokeStyle = 'rgba(0, 255, 102, 0.35)';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 4]); // Gestrichelte Linie für Grenzen
+        function loadGoals() {
+            const saved = localStorage.getItem('macro_goals');
+            if (saved) {
+                targets = JSON.parse(saved);
+                document.getElementById('goal-kcal-input').value = targets.kcal;
+                document.getElementById('goal-protein-input').value = targets.protein;
+                document.getElementById('goal-carbs-input').value = targets.carbs;
+                document.getElementById('goal-fat-input').value = targets.fat;
+            }
+            updateDashboardTargets();
+        }
 
-      BORDERS.forEach(borderLine => {
-        ctx.beginPath();
-        borderLine.forEach((pt, index) => {
-          const pos = gpsToRadarPixel(pt[0], pt[1]);
-          if (index === 0) ctx.moveTo(pos.x, pos.y);
-          else ctx.lineTo(pos.x, pos.y);
-        });
-        ctx.stroke();
-      });
+        function updateGoals() {
+            targets.kcal = parseFloat(document.getElementById('goal-kcal-input').value) || 2000;
+            targets.protein = parseFloat(document.getElementById('goal-protein-input').value) || 150;
+            targets.carbs = parseFloat(document.getElementById('goal-carbs-input').value) || 200;
+            targets.fat = parseFloat(document.getElementById('goal-fat-input').value) || 65;
+            localStorage.setItem('macro_goals', JSON.stringify(targets));
+            updateDashboardTargets();
+            calculateTotals();
+        }
 
-      // 2. FLÜSSE ZEICHNEN (Durchgezogen in leicht bläulichem/hellerem Grün)
-      ctx.strokeStyle = 'rgba(0, 255, 180, 0.4)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([]); // Durchgezogene Linie
+        function updateDashboardTargets() {
+            document.getElementById('target-kcal').innerText = targets.kcal;
+            document.getElementById('target-protein').innerText = targets.protein;
+            document.getElementById('target-carbs').innerText = targets.carbs;
+            document.getElementById('target-fat').innerText = targets.fat;
+        }
 
-      RIVERS.forEach(riverLine => {
-        ctx.beginPath();
-        riverLine.forEach((pt, index) => {
-          const pos = gpsToRadarPixel(pt[0], pt[1]);
-          if (index === 0) ctx.moveTo(pos.x, pos.y);
-          else ctx.lineTo(pos.x, pos.y);
-        });
-        ctx.stroke();
-      });
+        function loadLog() {
+            const data = localStorage.getItem(getStorageKey());
+            const items = data ? JSON.parse(data) : [];
+            renderTable(items);
+            calculateTotals(items);
+        }
 
-      // Zurücksetzen der Linien-Formate
-      ctx.setLineDash([]);
-    }
+        function saveLog(items) {
+            localStorage.setItem(getStorageKey(), JSON.stringify(items));
+            renderTable(items);
+            calculateTotals(items);
+        }
 
-    // --- RADAR RASTER & SCHIRM ---
-    function drawRadarScope() {
-      ctx.fillStyle = 'rgba(0, 17, 0, 0.15)'; 
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function addCustomFood() {
+            const name = document.getElementById('input-name').value;
+            const kcal = parseFloat(document.getElementById('input-kcal').value) || 0;
+            const protein = parseFloat(document.getElementById('input-protein').value) || 0;
+            const carbs = parseFloat(document.getElementById('input-carbs').value) || 0;
+            const fat = parseFloat(document.getElementById('input-fat').value) || 0;
 
-      ctx.strokeStyle = '#004411';
-      ctx.lineWidth = 1;
+            if (!name) return alert('Bitte Name eingeben');
 
-      // Abstandsringe (z.B. 20km, 40km, 60km, 80km)
-      for (let r = 1; r <= 4; r++) {
-        ctx.beginPath();
-        ctx.arc(CENTER_X, CENTER_Y, (RADIUS / 4) * r, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+            const items = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+            items.push({ id: Date.now(), name, kcal, protein, carbs, fat });
+            saveLog(items);
 
-      // Fadenkreuz
-      ctx.beginPath();
-      ctx.moveTo(CENTER_X, CENTER_Y - RADIUS);
-      ctx.lineTo(CENTER_X, CENTER_Y + RADIUS);
-      ctx.moveTo(CENTER_X - RADIUS, CENTER_Y);
-      ctx.lineTo(CENTER_X + RADIUS, CENTER_Y);
-      ctx.stroke();
+            document.getElementById('input-name').value = '';
+            document.getElementById('input-kcal').value = '';
+            document.getElementById('input-protein').value = '';
+            document.getElementById('input-carbs').value = '';
+            document.getElementById('input-fat').value = '';
+        }
 
-      // Eigenes Zentrum (Heimatort) markieren
-      ctx.fillStyle = '#00ff66';
-      ctx.beginPath();
-      ctx.arc(CENTER_X, CENTER_Y, 3, 0, Math.PI * 2);
-      ctx.fill();
+        function deleteItem(id) {
+            let items = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+            items = items.filter(item => item.id !== id);
+            saveLog(items);
+        }
 
-      // Rand
-      ctx.strokeStyle = '#00ff66';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(CENTER_X, CENTER_Y, RADIUS, 0, Math.PI * 2);
-      ctx.stroke();
-    }
+        function renderTable(items) {
+            const tbody = document.getElementById('log-table-body');
+            tbody.innerHTML = '';
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Keine Einträge.</td></tr>';
+                return;
+            }
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.kcal}</td>
+                    <td>${item.protein}g</td>
+                    <td>${item.carbs}g</td>
+                    <td>${item.fat}g</td>
+                    <td><button class="btn-delete" onclick="deleteItem(${item.id})">x</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
-    // --- DREHENDER RADARSTRAHL ---
-    function drawSweep() {
-      sweepAngle += 0.025;
-      if (sweepAngle >= Math.PI * 2) sweepAngle = 0;
+        function calculateTotals(items) {
+            if (!items) items = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+            let totals = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+            items.forEach(item => {
+                totals.kcal += item.kcal;
+                totals.protein += item.protein;
+                totals.carbs += item.carbs;
+                totals.fat += item.fat;
+            });
 
-      ctx.save();
-      ctx.translate(CENTER_X, CENTER_Y);
-      ctx.rotate(sweepAngle);
+            document.getElementById('curr-kcal').innerText = Math.round(totals.kcal);
+            document.getElementById('curr-protein').innerText = Math.round(totals.protein);
+            document.getElementById('curr-carbs').innerText = Math.round(totals.carbs);
+            document.getElementById('curr-fat').innerText = Math.round(totals.fat);
 
-      let gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, RADIUS);
-      gradient.addColorStop(0, 'rgba(0, 255, 102, 0.8)');
-      gradient.addColorStop(1, 'rgba(0, 255, 102, 0.02)');
+            document.getElementById('prog-kcal').style.width = Math.min((totals.kcal / targets.kcal) * 100, 100) + '%';
+            document.getElementById('prog-protein').style.width = Math.min((totals.protein / targets.protein) * 100, 100) + '%';
+            document.getElementById('prog-carbs').style.width = Math.min((totals.carbs / targets.carbs) * 100, 100) + '%';
+            document.getElementById('prog-fat').style.width = Math.min((totals.fat / targets.fat) * 100, 100) + '%';
+        }
 
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.arc(0, 0, RADIUS, -0.3, 0); 
-      ctx.closePath();
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      ctx.restore();
-    }
+        async function searchOpenFoodFacts() {
+            const query = document.getElementById('api-search-input').value;
+            const resultsBox = document.getElementById('search-results');
+            if (!query) return;
+            resultsBox.style.display = 'block';
+            resultsBox.innerHTML = '<div style="padding:10px;">Suche...</div>';
 
-    // --- MAIN LOOP ---
-    function mainLoop() {
-      drawRadarScope();
-      drawMapOverlays(); // Kartenmaterial auf den Radar-Schirm zeichnen
-      drawSweep();
-      
-      requestAnimationFrame(mainLoop);
-    }
+            try {
+                const res = await fetch(`https://de.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=5`);
+                const data = await res.json();
+                resultsBox.innerHTML = '';
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach(p => {
+                        const n = p.nutriments || {};
+                        const name = p.product_name || 'Unbenannt';
+                        const kcal = Math.round(n['energy-kcal_100g'] || 0);
+                        const protein = Math.round(n.proteins_100g || 0);
+                        const carbs = Math.round(n.carbohydrates_100g || 0);
+                        const fat = Math.round(n.fat_100g || 0);
 
-    mainLoop();
-  </script>
+                        const div = document.createElement('div');
+                        div.className = 'search-item';
+                        div.innerHTML = `<div><strong>${name}</strong> (100g)<br><small>${kcal} kcal | P:${protein}g</small></div><button class="btn-add">+</button>`;
+                        div.onclick = () => {
+                            document.getElementById('input-name').value = name + ' (100g)';
+                            document.getElementById('input-kcal').value = kcal;
+                            document.getElementById('input-protein').value = protein;
+                            document.getElementById('input-carbs').value = carbs;
+                            document.getElementById('input-fat').value = fat;
+                            resultsBox.style.display = 'none';
+                        };
+                        resultsBox.appendChild(div);
+                    });
+                } else {
+                    resultsBox.innerHTML = '<div style="padding:10px;">Nichts gefunden.</div>';
+                }
+            } catch (err) {
+                resultsBox.innerHTML = '<div style="padding:10px;">Fehler bei der Suche.</div>';
+            }
+        }
+    </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro & Calorie Tracker</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .date-picker {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .fill-calories { background-color: var(--accent-green); }
+        .fill-protein { background-color: var(--accent-blue); }
+        .fill-carbs { background-color: var(--accent-amber); }
+        .fill-fat { background-color: var(--accent-red); }
+
+        .section-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], input[type="number"] {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        button {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-add { background: var(--accent-green); }
+
+        .search-results {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .search-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .goals-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .goals-section input {
+            width: 80px;
+            padding: 4px 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h2>MacroTracker</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Kostenloser Yazio-Style Tracker</p>
+        </div>
+        <input type="date" id="track-date" class="date-picker">
+    </div>
+
+    <div class="dashboard">
+        <div class="card">
+            <div class="card-title">Kalorien</div>
+            <div class="card-value"><span id="curr-kcal">0</span> / <span id="target-kcal">2000</span> <small>kcal</small></div>
+            <div class="progress-bar"><div id="prog-kcal" class="progress-fill fill-calories" style="width: 0%;"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Protein</div>
+            <div class="card-value"><span id="curr-protein">0</span> / <span id="target-protein">150</span> <small>g</small></div>
+            <div class="progress-bar"><div id="prog-protein" class="progress-fill fill-protein" style="width: 0%;"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Kohlenhydrate</div>
+            <div class="card-value"><span id="curr-carbs">0</span> / <span id="target-carbs">200</span> <small>g</small></div>
+            <div class="progress-bar"><div id="prog-carbs" class="progress-fill fill-carbs" style="width: 0%;"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Fett</div>
+            <div class="card-value"><span id="curr-fat">0</span> / <span id="target-fat">65</span> <small>g</small></div>
+            <div class="progress-bar"><div id="prog-fat" class="progress-fill fill-fat" style="width: 0%;"></div></div>
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h3 style="margin-bottom: 10px;">Lebensmittel hinzufügen</h3>
+        <div class="search-container">
+            <input type="text" id="api-search-input" placeholder="Online suchen (z. B. Protein Wrap)...">
+            <button onclick="searchOpenFoodFacts()">Suchen</button>
+        </div>
+        <div id="search-results" class="search-results"></div>
+
+        <div class="grid-inputs">
+            <input type="text" id="input-name" placeholder="Name">
+            <input type="number" id="input-kcal" placeholder="Kcal">
+            <input type="number" id="input-protein" placeholder="Protein (g)">
+            <input type="number" id="input-carbs" placeholder="Carbs (g)">
+            <input type="number" id="input-fat" placeholder="Fett (g)">
+        </div>
+        <button class="btn-add" onclick="addCustomFood()" style="width: 100%;">Eintrag speichern</button>
+    </div>
+
+    <div class="section-box">
+        <h3 style="margin-bottom: 10px;">Tagesprotokoll</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lebensmittel</th>
+                        <th>Kcal</th>
+                        <th>Protein</th>
+                        <th>Carbs</th>
+                        <th>Fett</th>
+                        <th>Aktion</th>
+                    </tr>
+                </thead>
+                <tbody id="log-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h3 style="margin-bottom: 10px;">Tagesziele anpassen</h3>
+        <div class="goals-section">
+            <label>Kcal: <input type="number" id="goal-kcal-input" value="2000"></label>
+            <label>Protein: <input type="number" id="goal-protein-input" value="150"></label>
+            <label>Carbs: <input type="number" id="goal-carbs-input" value="200"></label>
+            <label>Fett: <input type="number" id="goal-fat-input" value="65"></label>
+            <button onclick="updateGoals()">Speichern</button>
+        </div>
+    </div>
+
+    <script>
+        let targets = { kcal: 2000, protein: 150, carbs: 200, fat: 65 };
+        const currentDateInput = document.getElementById('track-date');
+        currentDateInput.valueAsDate = new Date();
+
+        window.onload = function() {
+            loadGoals();
+            loadLog();
+            currentDateInput.addEventListener('change', loadLog);
+        };
+
+        function getStorageKey() { return `macro_log_${currentDateInput.value}`; }
+
+        function loadGoals() {
+            const saved = localStorage.getItem('macro_goals');
+            if (saved) {
+                targets = JSON.parse(saved);
+                document.getElementById('goal-kcal-input').value = targets.kcal;
+                document.getElementById('goal-protein-input').value = targets.protein;
+                document.getElementById('goal-carbs-input').value = targets.carbs;
+                document.getElementById('goal-fat-input').value = targets.fat;
+            }
+            updateDashboardTargets();
+        }
+
+        function updateGoals() {
+            targets.kcal = parseFloat(document.getElementById('goal-kcal-input').value) || 2000;
+            targets.protein = parseFloat(document.getElementById('goal-protein-input').value) || 150;
+            targets.carbs = parseFloat(document.getElementById('goal-carbs-input').value) || 200;
+            targets.fat = parseFloat(document.getElementById('goal-fat-input').value) || 65;
+            localStorage.setItem('macro_goals', JSON.stringify(targets));
+            updateDashboardTargets();
+            calculateTotals();
+        }
+
+        function updateDashboardTargets() {
+            document.getElementById('target-kcal').innerText = targets.kcal;
+            document.getElementById('target-protein').innerText = targets.protein;
+            document.getElementById('target-carbs').innerText = targets.carbs;
+            document.getElementById('target-fat').innerText = targets.fat;
+        }
+
+        function loadLog() {
+            const data = localStorage.getItem(getStorageKey());
+            const items = data ? JSON.parse(data) : [];
+            renderTable(items);
+            calculateTotals(items);
+        }
+
+        function saveLog(items) {
+            localStorage.setItem(getStorageKey(), JSON.stringify(items));
+            renderTable(items);
+            calculateTotals(items);
+        }
+
+        function addCustomFood() {
+            const name = document.getElementById('input-name').value;
+            const kcal = parseFloat(document.getElementById('input-kcal').value) || 0;
+            const protein = parseFloat(document.getElementById('input-protein').value) || 0;
+            const carbs = parseFloat(document.getElementById('input-carbs').value) || 0;
+            const fat = parseFloat(document.getElementById('input-fat').value) || 0;
+
+            if (!name) return alert('Bitte Name eingeben');
+
+            const items = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+            items.push({ id: Date.now(), name, kcal, protein, carbs, fat });
+            saveLog(items);
+
+            document.getElementById('input-name').value = '';
+            document.getElementById('input-kcal').value = '';
+            document.getElementById('input-protein').value = '';
+            document.getElementById('input-carbs').value = '';
+            document.getElementById('input-fat').value = '';
+        }
+
+        function deleteItem(id) {
+            let items = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+            items = items.filter(item => item.id !== id);
+            saveLog(items);
+        }
+
+        function renderTable(items) {
+            const tbody = document.getElementById('log-table-body');
+            tbody.innerHTML = '';
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Keine Einträge.</td></tr>';
+                return;
+            }
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.kcal}</td>
+                    <td>${item.protein}g</td>
+                    <td>${item.carbs}g</td>
+                    <td>${item.fat}g</td>
+                    <td><button class="btn-delete" onclick="deleteItem(${item.id})">x</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function calculateTotals(items) {
+            if (!items) items = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+            let totals = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+            items.forEach(item => {
+                totals.kcal += item.kcal;
+                totals.protein += item.protein;
+                totals.carbs += item.carbs;
+                totals.fat += item.fat;
+            });
+
+            document.getElementById('curr-kcal').innerText = Math.round(totals.kcal);
+            document.getElementById('curr-protein').innerText = Math.round(totals.protein);
+            document.getElementById('curr-carbs').innerText = Math.round(totals.carbs);
+            document.getElementById('curr-fat').innerText = Math.round(totals.fat);
+
+            document.getElementById('prog-kcal').style.width = Math.min((totals.kcal / targets.kcal) * 100, 100) + '%';
+            document.getElementById('prog-protein').style.width = Math.min((totals.protein / targets.protein) * 100, 100) + '%';
+            document.getElementById('prog-carbs').style.width = Math.min((totals.carbs / targets.carbs) * 100, 100) + '%';
+            document.getElementById('prog-fat').style.width = Math.min((totals.fat / targets.fat) * 100, 100) + '%';
+        }
+
+        async function searchOpenFoodFacts() {
+            const query = document.getElementById('api-search-input').value;
+            const resultsBox = document.getElementById('search-results');
+            if (!query) return;
+            resultsBox.style.display = 'block';
+            resultsBox.innerHTML = '<div style="padding:10px;">Suche...</div>';
+
+            try {
+                const res = await fetch(`https://de.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=5`);
+                const data = await res.json();
+                resultsBox.innerHTML = '';
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach(p => {
+                        const n = p.nutriments || {};
+                        const name = p.product_name || 'Unbenannt';
+                        const kcal = Math.round(n['energy-kcal_100g'] || 0);
+                        const protein = Math.round(n.proteins_100g || 0);
+                        const carbs = Math.round(n.carbohydrates_100g || 0);
+                        const fat = Math.round(n.fat_100g || 0);
+
+                        const div = document.createElement('div');
+                        div.className = 'search-item';
+                        div.innerHTML = `<div><strong>${name}</strong> (100g)<br><small>${kcal} kcal | P:${protein}g</small></div><button class="btn-add">+</button>`;
+                        div.onclick = () => {
+                            document.getElementById('input-name').value = name + ' (100g)';
+                            document.getElementById('input-kcal').value = kcal;
+                            document.getElementById('input-protein').value = protein;
+                            document.getElementById('input-carbs').value = carbs;
+                            document.getElementById('input-fat').value = fat;
+                            resultsBox.style.display = 'none';
+                        };
+                        resultsBox.appendChild(div);
+                    });
+                } else {
+                    resultsBox.innerHTML = '<div style="padding:10px;">Nichts gefunden.</div>';
+                }
+            } catch (err) {
+                resultsBox.innerHTML = '<div style="padding:10px;">Fehler bei der Suche.</div>';
+            }
+        }
+    </script>
+</body>
+</html>
+
